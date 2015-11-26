@@ -299,9 +299,12 @@ module.exports = function makeWebpackConfig(options) {
       cached: false,
       colors: true,
       chunk: false
-    },
-    cert: fs.readFileSync('certificates/fraedom-dev.com.crt'),
-    key: fs.readFileSync('certificates/fraedom-dev.com.decrypted.key')
+    }
+    /**
+     * Add your own certificates for https here.
+     * cert: fs.readFileSync('certificates/my-domain.crt'),
+     * key: fs.readFileSync('certificates/my-domain.decrypted.key')
+     */
   };
 
   return config;
