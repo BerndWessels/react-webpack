@@ -1,0 +1,79 @@
+{
+  "name": "react-webpack",
+  "version": "0.0.1",
+  "description": "This is a template you can fork and clone to develop React SPA Websites.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --history-api-fallback --inline --progress --hot --watch",
+    "build": "webpack --config webpack.build.js --bail -p",
+    "schema:update": "babel-node --eval \"require('./scripts/schemaUpdate')().catch(err => console.error(err.stack))\"",
+    "schema:serve": "babel-node --eval \"require('./scripts/schemaServe')().catch(err => console.error(err.stack))\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BerndWessels/react-webpack"
+  },
+  "author": "'Bernd Wessels' <wesselsbernd@gmail.com>",
+  "license": "MIT",
+  "metadata": {
+    "graphql": {
+      "schema": "./data/schema.json"
+    }
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.0",
+    "react": "^0.14.0",
+    "react-bootstrap": "^0.28.0",
+    "react-dom": "^0.14.0",
+    "react-relay": "^0.5.0",
+    "react-router": "^1.0.0",
+    "react-router-relay": "^0.8.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.0.0",
+    "babel": "^5.0.0",
+    "babel-core": "^5.0.0",
+    "babel-eslint": "^4.0.0",
+    "babel-loader": "^5.0.0",
+    "babel-plugin-react-transform": "^1.0.0",
+    "babel-relay-plugin-loader": "^0.3.0",
+    "babel-runtime": "^5.0.0",
+    "browser-sync": "^2.0.0",
+    "browser-sync-webpack-plugin": "^1.0.0",
+    "clean-webpack-plugin": "^0.1.0",
+    "copy-webpack-plugin": "^0.2.0",
+    "cors": "^2.7.1",
+    "css-loader": "^0.23.0",
+    "express": "^4.13.3",
+    "express-graphql": "^0.4.4",
+    "extract-text-webpack-plugin": "^0.9.0",
+    "file-loader": "^0.8.0",
+    "graphql": "^0.4.0",
+    "graphql-relay": "^0.3.0",
+    "html-webpack-plugin": "^1.0.0",
+    "isparta-instrumenter-loader": "^1.0.0",
+    "jasmine-core": "^2.0.0",
+    "karma": "^0.13.0",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.0",
+    "karma-jasmine": "^0.3.0",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-sourcemap-loader": "^0.3.0",
+    "karma-spec-reporter": "^0.0.22",
+    "karma-webpack": "^1.0.0",
+    "less": "^2.0.0",
+    "less-loader": "^2.0.0",
+    "node-libs-browser": "^0.5.0",
+    "null-loader": "^0.1.0",
+    "phantomjs": "^1.0.0",
+    "postcss-loader": "^0.8.0",
+    "raw-loader": "^0.5.0",
+    "react-transform-catch-errors": "^1.0.0",
+    "react-transform-hmr": "^1.0.0",
+    "redbox-react": "^1.0.0",
+    "relay-local-schema": "^0.3.0",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.0.0",
+    "webpack-dev-server": "^1.0.0"
+  }
+}

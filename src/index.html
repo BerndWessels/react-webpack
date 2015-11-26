@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui"/>
+  <base href="/">
+  <title>{%=o.htmlWebpackPlugin.options.title || 'Webpack App'%}</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- Provide default sizes specified for iOS7, other devices will scale as appropriate -->
+  <!-- Order is important and ensures it gracefully degrades along with compatibility of the device -->
+  <!-- The missing ‘sizes’ attribute in the last touch-icon ‘rel’ tag, ensures compatibility with older iPhones -->
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152x152.png"/>
+  <link rel="apple-touch-icon" sizes="120x120" href="icon-120x120.png"/>
+  <link rel="apple-touch-icon" sizes="76x76" href="icon-76x76.png"/>
+  <link rel="apple-touch-icon" href="icon-60x60.png"/>
+  {% if (o.htmlWebpackPlugin.files.favicon) { %}
+  <link rel="shortcut icon" href="{%=o.htmlWebpackPlugin.files.favicon%}">
+  {% } %}
+  <!-- Styles -->
+  {% for (var css in o.htmlWebpackPlugin.files.css) { %}
+  <link href="{%=o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
+  {% } %}
+</head>
+<body>
+<div id="root"></div>
+<!-- External Scripts -->
+<script src="externals/react-with-addons.0.14.0.js"></script>
+<script src="externals/react-dom.0.14.0.js"></script>
+<script src="externals/relay.0.4.0.js"></script>
+<!-- Application Scripts -->
+{% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
+<script src="{%=o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
+{% } %}
+</body>
+</html>
