@@ -42,7 +42,7 @@ class Users extends React.Component {
 export default Relay.createContainer(Users, {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on Person {
         id
       }
     `

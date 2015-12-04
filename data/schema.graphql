@@ -1,3 +1,7 @@
+type Mutation {
+  updatePerson(input: UpdatePersonInput!): UpdatePersonPayload
+}
+
 interface Node {
   id: ID!
 }
@@ -9,27 +13,45 @@ type PageInfo {
   endCursor: String
 }
 
+type Person implements Node {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: String
+  posts: postConnection
+}
+
+type Post implements Node {
+  id: ID!
+  title: String
+  content: String
+  person: Person
+}
+
+type postConnection {
+  pageInfo: PageInfo!
+  edges: [postEdge]
+}
+
+type postEdge {
+  node: Post
+  cursor: String!
+}
+
 type Query {
   node(id: ID!): Node
-  viewer: User
+  viewer: Person
+  people: [Person]
+  posts: [Post]
 }
 
-type User implements Node {
+input UpdatePersonInput {
   id: ID!
-  widgets(after: String, first: Int, before: String, last: Int): WidgetConnection
+  email: String!
+  clientMutationId: String!
 }
 
-type Widget implements Node {
-  id: ID!
-  name: String
-}
-
-type WidgetConnection {
-  pageInfo: PageInfo!
-  edges: [WidgetEdge]
-}
-
-type WidgetEdge {
-  node: Widget
-  cursor: String!
+type UpdatePersonPayload {
+  person: Person
+  clientMutationId: String!
 }

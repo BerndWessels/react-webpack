@@ -60,7 +60,7 @@ module.exports = function makeWebpackConfig(options) {
     "react": "React",
     "react-dom": "ReactDOM",
     "react-relay": "Relay"
-  }
+  };
 
   /**
    * Output
@@ -99,7 +99,7 @@ module.exports = function makeWebpackConfig(options) {
   } else if (BUILD) {
     config.devtool = 'source-map';
   } else {
-    config.devtool = 'source-map'; //'eval';
+    config.devtool = 'eval';
   }
 
   /**

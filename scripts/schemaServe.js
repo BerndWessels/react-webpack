@@ -22,7 +22,7 @@ export default task('serve data', async () => {
 
   // Create a GraphQL endpoint.
   var graphQLServer = express();
-  // TODO authentication
+  /* TODO authentication
   graphQLServer.use(function (req, res, next) {
     // Allow all CORS requests.
     if (req.headers.hasOwnProperty('access-control-request-method')) {
@@ -41,13 +41,16 @@ export default task('serve data', async () => {
       }
     }
   });
+  */
+
   // Enable CORS during development.
   graphQLServer.use(cors());
   // Expose the GraphQL endpoint.
   graphQLServer.use('/', graphQLHTTP(request => ({
     schema: Schema,
-    rootValue: {session: request.session},
-    pretty: true
+    rootValue: {session: {userId: 1}},//request.session},
+    pretty: true,
+    graphiql: true
   })));
   // Run the server.
   graphQLServer.listen(GRAPHQL_PORT, () => console.log(

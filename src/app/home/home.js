@@ -12,6 +12,75 @@ import Relay from 'react-relay';
 
 import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
 
+
+
+class UpdatePersonMutation extends Relay.Mutation {
+  // This method should return a GraphQL operation that represents
+  // the mutation to be performed. This presumes that the server
+  // implements a mutation type named ‘likeStory’.
+  getMutation() {
+    return Relay.QL`mutation {updatePerson}`;
+  }
+  // Use this method to prepare the variables that will be used as
+  // input to the mutation. Our ‘likeStory’ mutation takes exactly
+  // one variable as input – the ID of the story to like.
+  getVariables() {
+    return {id: this.props.person.id, email: this.props.email};
+  }
+  // Use this method to design a ‘fat query’ – one that represents every
+  // field in your data model that could change as a result of this mutation.
+  // Liking a story could affect the likers count, the sentence that
+  // summarizes who has liked a story, and the fact that the viewer likes the
+  // story or not. Relay will intersect this query with a ‘tracked query’
+  // that represents the data that your application actually uses, and
+  // instruct the server to include only those fields in its response.
+  getFatQuery() {
+    return Relay.QL`
+      fragment on UpdatePersonPayload {
+        person {
+          email,
+        }
+      }
+    `;
+  }
+  // These configurations advise Relay on how to handle the LikeStoryPayload
+  // returned by the server. Here, we tell Relay to use the payload to
+  // change the fields of a record it already has in the store. The
+  // key-value pairs of ‘fieldIDs’ associate field names in the payload
+  // with the ID of the record that we want updated.
+  getConfigs() {
+    return [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        person: this.props.person.id,
+      },
+    }];
+  }
+  // This mutation has a hard dependency on the story's ID. We specify this
+  // dependency declaratively here as a GraphQL query fragment. Relay will
+  // use this fragment to ensure that the story's ID is available wherever
+  // this mutation is used.
+  static fragments = {
+    person: () => Relay.QL`
+      fragment on Person {
+        id,
+        email
+      }
+    `,
+  };
+
+  getOptimisticResponse() {
+    return {
+      person: {
+        id: this.props.person.id,
+        email: this.props.email,
+      },
+    };
+  }
+}
+
+
+
 /**
  * The Home component.
  */
@@ -24,65 +93,22 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
   }
+  // Handle the button click event.
+  _handleClick = () => {
+    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: 'bla@blub.de'}));
+  }
   // Render the component.
   render() {
-    const wellStyles = {maxWidth: 400, margin: '0 auto 10px'};
-    const innerGlyphicon = <Glyphicon glyph="music" />;
-    const innerButton = <Button>Before</Button>;
-    const innerDropdown = (
-      <DropdownButton title="Action" id="input-dropdown-addon">
-        <MenuItem key="1">Item</MenuItem>
-      </DropdownButton>
-    );
-    const innerRadio = <input type="radio" aria-label="..." />;
-    const innerCheckbox = <input type="checkbox" aria-label="..." />;
-    // Return the component UI.
     return (
       <div>
-        <h1>Widget list</h1>
+        <h1>Home</h1>
+        <input type="text" defaultValue={this.props.viewer.email}/>
+        <Button onClick={this._handleClick}>Update the email!</Button>
         <ul>
-          {this.props.viewer.widgets.edges.map(edge =>
-              <li key={edge.node.id}>{edge.node.name} (ID: {edge.node.id})</li>
+          {this.props.viewer.posts.edges.map(edge =>
+            <li key={edge.node.id}>{edge.node.title} (ID: {edge.node.id})</li>
           )}
         </ul>
-        <ButtonToolbar>
-          {/* Standard button */}
-          <Button>Default</Button>
-          {/* Provides extra visual weight and identifies the primary action in a set of buttons */}
-          <Button bsStyle="primary">Primary</Button>
-          {/* Indicates a successful or positive action */}
-          <Button bsStyle="success">Success</Button>
-          {/* Contextual button for informational alert messages */}
-          <Button bsStyle="info">Info</Button>
-          {/* Indicates caution should be taken with this action */}
-          <Button bsStyle="warning">Warning</Button>
-          {/* Indicates a dangerous or potentially negative action */}
-          <Button bsStyle="danger">Danger</Button>
-          {/* Deemphasize a button by making it look like a link while maintaining button behavior */}
-          <Button bsStyle="link">Link</Button>
-        </ButtonToolbar>
-        <div className="well" style={wellStyles}>
-          <Button bsStyle="primary" bsSize="large" block>Block level button</Button>
-          <Button bsSize="large" block>Block level button</Button>
-        </div>
-        <ButtonGroup>
-          <Button>1</Button>
-          <Button>2</Button>
-          <DropdownButton title="Dropdown" id="bg-nested-dropdown">
-            <MenuItem eventKey="1">Dropdown link</MenuItem>
-            <MenuItem eventKey="2">Dropdown link</MenuItem>
-          </DropdownButton>
-        </ButtonGroup>
-        <form>
-          <Input type="text" addonBefore="@" />
-          <Input type="text" addonAfter=".00" />
-          <Input type="text" addonBefore="$" addonAfter=".00" />
-          <Input type="text" addonAfter={innerGlyphicon} />
-          <Input type="text" buttonBefore={innerButton} />
-          <Input type="text" buttonAfter={innerDropdown} />
-          <Input type="text" addonBefore={innerRadio} />
-          <Input type="text" addonBefore={innerCheckbox} />
-        </form>
       </div>
     );
   }
@@ -94,15 +120,18 @@ class Home extends React.Component {
 export default Relay.createContainer(Home, {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
-        widgets(first: 5) {
+      fragment on Person {
+        email,
+        posts {
           edges {
+            cursor,
             node {
               id,
-              name,
-            },
-          },
+              title
+            }
+          }
         },
+        ${UpdatePersonMutation.getFragment('person')}
       }
     `
   }
