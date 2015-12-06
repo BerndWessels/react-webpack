@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback --inline --progress --hot --watch",
     "build": "webpack --config webpack.build.js --bail -p",
+    "database:fake": "babel-node --eval \"require('./scripts/databaseFake')().catch(err => console.error(err.stack))\"",
     "schema:update": "babel-node --eval \"require('./scripts/schemaUpdate')().catch(err => console.error(err.stack))\"",
     "schema:serve": "babel-node --eval \"require('./scripts/schemaServe')().catch(err => console.error(err.stack))\""
   },
