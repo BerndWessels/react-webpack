@@ -18,18 +18,18 @@ import path from 'path';
  */
 import Sequelize from 'sequelize';
 
-/**
- * Create the database connection.
- */
-var sequelize = new Sequelize('manapaho', 'root', 'abcDEF123', {
-  host: '192.168.101.27',
-  dialect: 'mysql',
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-  }
-});
+    /**
+     * Create the database connection.
+     */
+    var sequelize = new Sequelize('manapaho', 'root', 'abcDEF123', {
+      host: '192.168.101.92',
+      dialect: 'mysql',
+      pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+      }
+    });
 
 /**
  * Create the database access.

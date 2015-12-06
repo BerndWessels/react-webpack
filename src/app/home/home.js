@@ -101,7 +101,7 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Home</h1>
+        <h1>Home {this.props.viewer.email}</h1>
         <input type="text" defaultValue={this.props.viewer.email}/>
         <Button onClick={this._handleClick}>Update the email!</Button>
         <ul>
