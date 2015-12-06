@@ -6,6 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback --inline --progress --hot --watch",
     "build": "webpack --config webpack.build.js --bail -p",
+    "postinstall": "babel-node --eval \"require('./scripts/externalsUpdate')().catch(err => console.error(err.stack))\"",
+    "externals:update": "babel-node --eval \"require('./scripts/externalsUpdate')().catch(err => console.error(err.stack))\"",
     "database:fake": "babel-node --eval \"require('./scripts/databaseFake')().catch(err => console.error(err.stack))\"",
     "schema:update": "babel-node --eval \"require('./scripts/schemaUpdate')().catch(err => console.error(err.stack))\"",
     "schema:serve": "babel-node --eval \"require('./scripts/schemaServe')().catch(err => console.error(err.stack))\""
@@ -75,6 +77,7 @@
     "null-loader": "^0.1.0",
     "phantomjs": "^1.0.0",
     "postcss-loader": "^0.8.0",
+    "q": "^1.0.0",
     "raw-loader": "^0.5.0",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.0",

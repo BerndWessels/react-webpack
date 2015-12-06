@@ -23,19 +23,28 @@ import task from './lib/task';
 /**
  * Create/override database with fake data.
  */
-export default task('create/override fake database', async () => {
-  await db.sequelize.sync({force: true}).then(()=> {
-    _.times(10, ()=> {
-      return db.person.create({
-        firstName: Faker.name.firstName(),
-        lastName: Faker.name.lastName(),
-        email: Faker.internet.email()
-      }).then(person => {
-        return person.createPost({
-          title: `Sample by ${person.firstName}`,
-          content: `Content for ${person.lastName}`
-        });
-      })
+function createPersonAndPosts(){
+  return db.person.create({
+    firstName: Faker.name.firstName(),
+    lastName: Faker.name.lastName(),
+    email: Faker.internet.email()
+  }).then(person => {
+    return person.createPost({
+      title: `Sample by ${person.firstName}`,
+      content: `Content for ${person.lastName}`
     });
   });
+}
+export default task('create/override fake database', async () => {
+  await db.sequelize.sync({force: true})
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
+    .then(createPersonAndPosts)
 });
