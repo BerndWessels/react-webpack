@@ -48,6 +48,11 @@ import qlPerson from './graphql/qlPerson';
 import qlPost from './graphql/qlPost';
 
 /**
+ * Import GraphQL Mutations.
+ */
+import updatePersonMutation from './graphql/mtUpdatePerson';
+
+/**
  * This is the type that will be the root of our query,
  * and the entry point into our schema.
  */
@@ -76,44 +81,6 @@ var queryType = new GraphQLObjectType({
   })
 });
 
-
-var GraphQLUpdatePersonMutation = mutationWithClientMutationId({
-  name: 'UpdatePerson',
-  inputFields: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
-    email: {type: new GraphQLNonNull(GraphQLString)},
-  },
-  outputFields: {
-    person: {
-      type: qlPerson,
-      resolve: (dbPerson) => {
-        console.log('QQQQQQQQQQQQQQQQQQQQQ' + JSON.stringify(dbPerson, null, 4));
-        return dbPerson;
-      },
-    }
-  },
-  mutateAndGetPayload: ({id, email}) => {
-    var localPersonId = fromGlobalId(id).id;
-    console.log('QQQ ' + localPersonId + ' QQQ ' + email);
-    return db.person.findOne({where: {id: localPersonId}}).then((dbPerson)=> {
-      dbPerson.email = email;
-      return dbPerson.save().then(()=> {
-        console.log('wwwwwwwwww');
-        return dbPerson;
-      });
-    });
-    /*    db.person.findOne({where: {id: localPersonId}}).then((dbPerson)=> {
-     return {localPersonId};
-
-     dbPerson.email = email;
-     return dbPerson.save().then(() => {
-     return {localPersonId};
-     });
-     });
-     */
-  },
-});
-
 /**
  * This is the type that will be the root of our mutations,
  * and the entry point into performing writes in our schema.
@@ -121,7 +88,7 @@ var GraphQLUpdatePersonMutation = mutationWithClientMutationId({
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    updatePerson: GraphQLUpdatePersonMutation
+    updatePerson: updatePersonMutation
   }
 });
 

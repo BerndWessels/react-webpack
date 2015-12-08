@@ -95,14 +95,14 @@ class Home extends React.Component {
   }
   // Handle the button click event.
   _handleClick = () => {
-    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: 'bla@blub.de'}));
+    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: this.refs.email.value}));
   }
   // Render the component.
   render() {
     return (
       <div>
         <h1>Home {this.props.viewer.email}</h1>
-        <input type="text" defaultValue={this.props.viewer.email}/>
+        <input ref="email" type="text" defaultValue={this.props.viewer.email}/>
         <Button onClick={this._handleClick}>Update the email!</Button>
         <ul>
           {this.props.viewer.posts.edges.map(edge =>

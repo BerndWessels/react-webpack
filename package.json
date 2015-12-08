@@ -1,7 +1,7 @@
 {
   "name": "react-webpack",
-  "version": "0.0.2",
-  "description": "This is a template you can fork and clone to develop React SPA Websites.",
+  "version": "0.1.0",
+  "description": "React Relay SQL Webpack SPA Example.",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback --inline --progress --hot --watch",
