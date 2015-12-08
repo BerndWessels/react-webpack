@@ -23,19 +23,22 @@ import task from './lib/task';
 /**
  * Create/override database with fake data.
  */
-function createPersonAndPosts(){
+function createPersonAndPosts() {
   return db.person.create({
-    firstName: Faker.name.firstName(),
-    lastName: Faker.name.lastName(),
-    email: Faker.internet.email()
-  }).then(person => {
-    return person.createPost({
-      title: `Sample by ${person.firstName}`,
-      content: `Content for ${person.lastName}`
+      firstName: Faker.name.firstName(),
+      lastName: Faker.name.lastName(),
+      email: Faker.internet.email()
+    })
+    .then(person => {
+      return person.createPost({
+        title: `Sample 1 by ${person.firstName}`,
+        content: `Content 1 for ${person.lastName}`
+      });
     });
-  });
 }
+
 export default task('create/override fake database', async () => {
+  var viewer;
   await db.sequelize.sync({force: true})
     .then(createPersonAndPosts)
     .then(createPersonAndPosts)
@@ -47,4 +50,26 @@ export default task('create/override fake database', async () => {
     .then(createPersonAndPosts)
     .then(createPersonAndPosts)
     .then(createPersonAndPosts)
+    .then(()=>{
+      return db.person.findOne({where: {id: 2}});
+    })
+    .then(person => {
+      viewer = person;
+      return viewer.createPost({
+        title: `Sample 2 by ${viewer.firstName}`,
+        content: `Content 2 for ${viewer.lastName}`
+      });
+    })
+    .then(_ => {
+      return viewer.createPost({
+        title: `Sample 3 by ${viewer.firstName}`,
+        content: `Content 3 for ${viewer.lastName}`
+      });
+    })
+    .then(_ => {
+      return viewer.createPost({
+        title: `Sample 4 by ${viewer.firstName}`,
+        content: `Content 4 for ${viewer.lastName}`
+      });
+    });
 });

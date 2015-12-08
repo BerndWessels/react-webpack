@@ -45,6 +45,11 @@ export default task('serve data', async () => {
 
   // Enable CORS during development.
   graphQLServer.use(cors());
+  // Log every incoming query.
+  graphQLServer.use((req, res, next) => {
+    console.log('Time:', Date.now());
+    next();
+  });
   // Expose the GraphQL endpoint.
   graphQLServer.use('/', graphQLHTTP(request => ({
     schema: Schema,

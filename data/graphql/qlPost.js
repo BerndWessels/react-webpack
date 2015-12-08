@@ -81,7 +81,7 @@ var qlPost = new GraphQLObjectType({
 });
 
 // Type registration.
-registerType({name: typeName, getByID: (id)=>db.post.findOne({where: {id: id}}), dbType: db.post, qlType: qlPost});
+registerType({name: typeName, getByID: (id)=>db.post.findOne({where: {id: id}}), dbType: db.post.Instance, qlType: qlPost});
 
 // Type export.
 export default qlPost;

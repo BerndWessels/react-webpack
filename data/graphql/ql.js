@@ -26,17 +26,14 @@ var registeredTypes = [];
 var defs = nodeDefinitions(
   // The first method defines the way we resolve an ID to its object.
   (globalId) => {
-    console.log('---------------------------------------------------------------' + globalId);
     var {type, id} = fromGlobalId(globalId);
-    var registeredType = registeredTypes.find(x => x.name === type);
+    var registeredType = registeredTypes.find(x => type === x.name);
     if (registeredType) return registeredType.getByID(id);
     else return null;
   },
   // The second defines the way we resolve an object to its GraphQL type.
   (obj) => {
-    console.log('--------------------------------------------------------------+' + JSON.stringify(obj));
     var registeredType = registeredTypes.find(x => obj instanceof x.dbType);
-    console.log('-------------------------------------------------------------++' + JSON.stringify(registeredType));
     if (registeredType) return registeredType.qlType;
     else return null;
   }

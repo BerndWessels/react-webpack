@@ -83,6 +83,7 @@ var qlPerson = new GraphQLObjectType({
     },
     posts: {
       type: postsConnection,
+      args: connectionArgs,
       resolve(dbPerson, args) {
         return dbPerson.getPosts().then(function (data) {
           return connectionFromArray(data, args);
@@ -94,7 +95,7 @@ var qlPerson = new GraphQLObjectType({
 });
 
 // Type registration.
-registerType({name: typeName, getByID: (id)=>db.person.findOne({where: {id: id}}), dbType: db.person, qlType: qlPerson});
+registerType({name: typeName, getByID: (id)=>db.person.findOne({where: {id: id}}), dbType: db.person.Instance, qlType: qlPerson});
 
 // Type export.
 export default qlPerson;

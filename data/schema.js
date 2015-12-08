@@ -65,7 +65,9 @@ var queryType = new GraphQLObjectType({
       resolve: (_, args, {rootValue: {session}}) => {
         return db.person.findOne({where: {id: 2}});
       }
-    },
+    }
+/*
+    ,
     people: {
       type: new GraphQLList(qlPerson),
       resolve: (_, args, {rootValue: {session}}) => {
@@ -78,6 +80,7 @@ var queryType = new GraphQLObjectType({
         return db.post.findAll({where: args});
       }
     }
+*/
   })
 });
 

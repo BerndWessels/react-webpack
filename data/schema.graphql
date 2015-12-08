@@ -18,7 +18,7 @@ type Person implements Node {
   firstName: String
   lastName: String
   email: String
-  posts: postConnection
+  posts(after: String, first: Int, before: String, last: Int): postConnection
 }
 
 type Post implements Node {
@@ -41,8 +41,6 @@ type postEdge {
 type Query {
   node(id: ID!): Node
   viewer: Person
-  people: [Person]
-  posts: [Post]
 }
 
 input UpdatePersonInput {
