@@ -35,25 +35,43 @@ class Home extends React.Component {
 
   // Handle the button click event.
   _handleUpdatePerson = () => {
-    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: this.refs.email.value}));
+    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: this.refs.email.getValue()}));
   };
   // Handle the button click event.
-  _handleMorePosts = () => {
+  _handleGetPrevPage = () => {
+    // update relay query parameters
+    this.props.relay.setVariables({
+      forward: false,
+      first: null,
+      after: null,
+      last: this.refs.pageSize.getValue(),
+      before: this.props.viewer.posts.pageInfo.startCursor
+    });
+  };
+  // Handle the button click event.
+  _handleGetNextPage = () => {
     // read current params
-    var count = this.props.relay.variables.numPosts;
+    // var count = this.props.relay.variables.postsPerPage;
     // update params
     this.props.relay.setVariables({
-      numPosts: count + 1
+      forward: true,
+      first: this.refs.pageSize.getValue(),
+      after: this.props.viewer.posts.pageInfo.endCursor,
+      last: null,
+      before: null
     });
   };
   // Render the component.
   render() {
     return (
       <div>
-        <h1>Home {this.props.viewer.email}</h1>
-        <input ref="email" type="text" defaultValue={this.props.viewer.email}/>
+        <h1>Home {this.props.viewer.firstName} - {this.props.viewer.email}</h1>
+        <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
         <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
-        <Button onClick={this._handleMorePosts}>count++</Button>
+        <Input ref="pageSize" type="text" label="Posts per page"
+               defaultValue={this.props.relay.variables.first}/>
+        <Button onClick={this._handleGetPrevPage}>Get Prev Page</Button>
+        <Button onClick={this._handleGetNextPage}>Get Next Page</Button>
         <ul>
           {this.props.viewer.posts.edges.map(edge =>
             <li key={edge.node.id}>{edge.node.title} (ID: {edge.node.id})</li>
@@ -69,19 +87,47 @@ class Home extends React.Component {
  */
 export default Relay.createContainer(Home, {
   initialVariables: {
-    numPosts: 1
+    forward: true,
+    first: 2,
+    after: null,
+    last: null,
+    before: null
   },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Person {
-        email,
-        posts(first: $numPosts) {
+        firstName
+        email
+        posts(first: $first, after: $after) @include(if: $forward) {
           edges {
-            cursor,
+            cursor
             node {
-              id,
+              id
               title
             }
+          }
+          totalCount
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+        },
+        posts(last: $last, before: $before) @skip(if: $forward) {
+          edges {
+            cursor
+            node {
+              id
+              title
+            }
+          }
+          totalCount
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
           }
         },
         ${UpdatePersonMutation.getFragment('person')}

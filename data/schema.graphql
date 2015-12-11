@@ -31,6 +31,7 @@ type Post implements Node {
 type postConnection {
   pageInfo: PageInfo!
   edges: [postEdge]
+  totalCount: Int
 }
 
 type postEdge {

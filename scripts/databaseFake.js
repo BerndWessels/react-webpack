@@ -29,13 +29,16 @@ function createPersonAndPosts() {
       lastName: Faker.name.lastName(),
       email: Faker.internet.email()
     })
-    .then(person => {
-      return person.createPost({
-        title: `Sample 1 by ${person.firstName}`,
-        content: `Content 1 for ${person.lastName}`
-      });
-    });
+    .then(person => createPost(person, 0));
 }
+
+function createPost(person, index) {
+  return person.createPost({
+    title: `Sample ${index} by ${person.firstName}`,
+    content: `Content ${index} for ${person.lastName}`
+  });
+}
+
 
 export default task('create/override fake database', async () => {
   var viewer;
@@ -50,26 +53,19 @@ export default task('create/override fake database', async () => {
     .then(createPersonAndPosts)
     .then(createPersonAndPosts)
     .then(createPersonAndPosts)
-    .then(()=>{
+    .then(()=> {
       return db.person.findOne({where: {id: 2}});
     })
     .then(person => {
       viewer = person;
-      return viewer.createPost({
-        title: `Sample 2 by ${viewer.firstName}`,
-        content: `Content 2 for ${viewer.lastName}`
-      });
+      return createPost(viewer, 1)
     })
-    .then(_ => {
-      return viewer.createPost({
-        title: `Sample 3 by ${viewer.firstName}`,
-        content: `Content 3 for ${viewer.lastName}`
-      });
-    })
-    .then(_ => {
-      return viewer.createPost({
-        title: `Sample 4 by ${viewer.firstName}`,
-        content: `Content 4 for ${viewer.lastName}`
-      });
-    });
+    .then(_ => createPost(viewer, 2))
+    .then(_ => createPost(viewer, 3))
+    .then(_ => createPost(viewer, 4))
+    .then(_ => createPost(viewer, 5))
+    .then(_ => createPost(viewer, 6))
+    .then(_ => createPost(viewer, 7))
+    .then(_ => createPost(viewer, 8))
+    .then(_ => createPost(viewer, 9))
 });
