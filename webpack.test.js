@@ -13,6 +13,7 @@
 
 // Force development mode for all build components.
 process.env['BABEL_ENV'] = 'development';
+process.env['NODE_ENV'] = 'development';
 
 module.exports = require('./webpack.make')({
   BUILD: false,
