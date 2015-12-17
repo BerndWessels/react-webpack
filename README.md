@@ -88,8 +88,9 @@ This will serve the `dist` folder on port `8080`. Just make sure you serve the s
 
 ## Scripts
 
-* `npm start` - start development server, try it by opening `http://localhost:8080/`
+* `npm start` - start development server, try it by opening `http://localhost:8080/` or with browser sync `http://localhost:3000/`
 * `npm run build` - generate a minified build to dist folder
+* `npm run build:serve` - serve the minified build locally on port 8080
 * `npm run test` - run all tests
 * `npm run test:live` - continuously run unit tests watching for changes
 * `npm run database:fake` - create/override the database with fake data
