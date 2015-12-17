@@ -1,8 +1,25 @@
 # Overview
 
-This is a template you can fork and clone to develop React SPA Websites.
+This is a template you can fork and clone to develop data driven React/Relay SPA Websites using a single GraphQL endpoint.
 
-It also shows how to integrate access to a database like mysql or postgres.
+It also shows how to integrate access to databases like mysql or postgres.
+
+# Babel 6
+
+Starting with version 0.2.0 we moved on to Babel 6.
+
+If for any reason you have to stick to Babel 5 then use 0.1.x versions of this repo.
+
+Some of the modules might still be a bit wonky since Babel 6 support is just slowly making it into the eco-system.
+
+    "babel-plugin-react-transform": "^2.0.0-beta1",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-react": "^6.0.0",
+    "babel-preset-stage-0": "^6.0.0",
+
+Make sure you get the latest versions. Otherwise you might run into bugs that have already been fixed.
+
+Also keep an eye on `babel-plugin-react-transform`. It is still experimental but will hopefully soon become stable.
 
 # Features
 * React
@@ -11,7 +28,7 @@ It also shows how to integrate access to a database like mysql or postgres.
 * MySQL
 * Webpack
 * Heavily commented webpack configuration with reasonable defaults.
-* ES6, and ES7 support with babel.js.
+* Latest JSX, ES6, and ES7 support with babel 6.
 * Source maps included in all builds.
 * Development server with live reload.
 * Production builds with cache busting and asset minification.
@@ -55,6 +72,19 @@ Make sure the ports used are all available and run the graphql server `npm run s
 Now in another console you can start developing with `npm start`
 
 That should automatically open a browser window on port 3000 and you are ready to go.
+
+# Build Production
+
+To build the production version of the client you first update/create the graphql schema `npm run schema:update`
+
+Then run `npm run build`
+
+This will create a `dist` folder with all the static production files and resources.
+
+You can copy the `dist` content now to your production environment.
+
+If you want to run the production version locally to make sure it works, you can run `npm run build:serve`.
+This will serve the `dist` folder on port `8080`. Just make sure you serve the schema as well.
 
 ## Scripts
 

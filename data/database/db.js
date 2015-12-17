@@ -22,7 +22,7 @@ import Sequelize from 'sequelize';
      * Create the database connection.
      */
     var sequelize = new Sequelize('manapaho', 'root', 'abcDEF123', {
-      host: '192.168.101.92',
+      host: '192.168.101.44',
       dialect: 'mysql',
       pool: {
         max: 5,
