@@ -11,8 +11,9 @@
  * Create the database entity.
  */
 export default function (sequelize, DataTypes) {
-
+  // Define the model.
   var model = sequelize.define('person', {
+      // Declare the properties.
       firstName: {
         type: DataTypes.STRING,
         allowNull: false
@@ -29,6 +30,7 @@ export default function (sequelize, DataTypes) {
         }
       }
     },
+    // Declare the associations.
     {
       classMethods: {
         associate: function (models) {
@@ -37,6 +39,6 @@ export default function (sequelize, DataTypes) {
       }
     }
   );
-
+  // Create the model.
   return model;
 }

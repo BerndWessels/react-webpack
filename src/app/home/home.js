@@ -16,12 +16,17 @@ import Relay from 'react-relay';
 import UpdatePersonMutation from '../../mutations/updatePersonMutation';
 
 /**
+ * Import Components.
+ */
+import Post from './post';
+
+/**
  * Import UX components.
  */
 import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
 
 /**
- * The Home component.
+ * The component.
  */
 class Home extends React.Component {
   // Expected properties.
@@ -32,7 +37,6 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
   }
-
   // Handle the button click event.
   _handleUpdatePerson = () => {
     Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: this.refs.email.getValue()}));
@@ -74,7 +78,7 @@ class Home extends React.Component {
         <Button onClick={this._handleGetNextPage}>Get Next Page</Button>
         <ul>
           {this.props.viewer.posts.edges.map(edge =>
-            <li key={edge.node.id}>{edge.node.title} (ID: {edge.node.id})</li>
+            <Post key={edge.cursor} post={edge.node}/>
           )}
         </ul>
       </div>
@@ -83,7 +87,7 @@ class Home extends React.Component {
 }
 
 /**
- * The home data container.
+ * The data container.
  */
 export default Relay.createContainer(Home, {
   initialVariables: {
@@ -99,39 +103,31 @@ export default Relay.createContainer(Home, {
         firstName
         email
         posts(first: $first, after: $after) @include(if: $forward) {
-          edges {
-            cursor
-            node {
-              id
-              title
-            }
-          }
-          totalCount
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
+          ${postsFragment}
         },
         posts(last: $last, before: $before) @skip(if: $forward) {
-          edges {
-            cursor
-            node {
-              id
-              title
-            }
-          }
-          totalCount
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
+          ${postsFragment}
         },
         ${UpdatePersonMutation.getFragment('person')}
       }
     `
   }
 });
+
+var postsFragment = Relay.QL`
+  fragment on postConnection {
+    edges {
+      cursor
+      node {
+        ${Post.getFragment('post')}
+      }
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+`;

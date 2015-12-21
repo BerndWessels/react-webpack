@@ -1,3 +1,20 @@
+type Comment implements Node {
+  id: ID!
+  content: String
+  post: Post
+}
+
+type commentConnection {
+  pageInfo: PageInfo!
+  edges: [commentEdge]
+  totalCount: Int
+}
+
+type commentEdge {
+  node: Comment
+  cursor: String!
+}
+
 type Mutation {
   updatePerson(input: UpdatePersonInput!): UpdatePersonPayload
 }
@@ -26,6 +43,7 @@ type Post implements Node {
   title: String
   content: String
   person: Person
+  comments(after: String, first: Int, before: String, last: Int): commentConnection
 }
 
 type postConnection {

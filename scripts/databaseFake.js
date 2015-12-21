@@ -12,6 +12,7 @@
  */
 import _ from 'lodash';
 import Faker from 'faker';
+import q from 'q';
 
 /**
  * Import Database Access.
@@ -23,49 +24,45 @@ import task from './lib/task';
 /**
  * Create/override database with fake data.
  */
-function createPersonAndPosts() {
+export default task('create/override fake database', async () => {
+  await db.sequelize.sync({force: true})
+    .then(() => {
+      // Create 10 persons.
+      return q.all(_.times(10, () => {
+        return createPerson();
+      }));
+    });
+});
+
+function createPerson() {
   return db.person.create({
       firstName: Faker.name.firstName(),
       lastName: Faker.name.lastName(),
       email: Faker.internet.email()
     })
-    .then(person => createPost(person, 0));
+    .then(person => {
+      // Create 10 posts for each person.
+      return q.all(_.times(10, (n) => {
+        return createPost(person, n);
+      }));
+    });
 }
 
 function createPost(person, index) {
   return person.createPost({
-    title: `Sample ${index} by ${person.firstName}`,
-    content: `Content ${index} for ${person.lastName}`
-  });
+      title: `Post ${index} by ${person.firstName}`,
+      content: `Post ${index} for ${person.lastName}`
+    })
+    .then(post => {
+      // Create 10 comments for each post.
+      return q.all(_.times(10, (n) => {
+        return createComment(post, n);
+      }));
+    });
 }
 
-
-export default task('create/override fake database', async () => {
-  var viewer;
-  await db.sequelize.sync({force: true})
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(createPersonAndPosts)
-    .then(()=> {
-      return db.person.findOne({where: {id: 2}});
-    })
-    .then(person => {
-      viewer = person;
-      return createPost(viewer, 1)
-    })
-    .then(_ => createPost(viewer, 2))
-    .then(_ => createPost(viewer, 3))
-    .then(_ => createPost(viewer, 4))
-    .then(_ => createPost(viewer, 5))
-    .then(_ => createPost(viewer, 6))
-    .then(_ => createPost(viewer, 7))
-    .then(_ => createPost(viewer, 8))
-    .then(_ => createPost(viewer, 9))
-});
+function createComment(post, index) {
+  return post.createComment({
+    content: `Comment ${index} for [${post.title}]`
+  });
+}

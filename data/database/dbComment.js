@@ -12,12 +12,8 @@
  */
 export default function (sequelize, DataTypes) {
   // Define the model.
-  var model = sequelize.define('post', {
+  var model = sequelize.define('comment', {
       // Declare the properties.
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       content: {
         type: DataTypes.STRING,
         allowNull: false
@@ -27,8 +23,7 @@ export default function (sequelize, DataTypes) {
     {
       classMethods: {
         associate: function (models) {
-          model.belongsTo(models.person);
-          model.hasMany(models.comment);
+          model.belongsTo(models.post);
         }
       }
     }

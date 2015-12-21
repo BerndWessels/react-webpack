@@ -12,7 +12,7 @@ import Relay from 'react-relay';
 import {Link} from 'react-router';
 
 /**
- * The application component.
+ * The component.
  */
 class App extends React.Component {
   // Expected properties.
@@ -24,7 +24,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
   }
-
   // Render the component.
   render() {
     // Get the properties.
@@ -42,7 +41,7 @@ class App extends React.Component {
 }
 
 /**
- * The application data container.
+ * The data container.
  */
 export default Relay.createContainer(App, {
   fragments: {

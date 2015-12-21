@@ -96,7 +96,7 @@ var qlPerson = new GraphQLObjectType({
       type: GraphQLString
     },
     posts: {
-      // This serves the person to post connection with support for paging.
+      // This serves the 'person to post' connection with support for paging.
       type: postsConnection,
       // We can extend the connection args with our own if we want to.
       args: {...{}, ...connectionArgs},

@@ -13,18 +13,26 @@ import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
 import {RelayRouter} from 'react-router-relay';
 import ReactRouterRelay from 'react-router-relay';
+
+/**
+ * Import Routes.
+ */
 import routes from './routes';
 
+/**
+ * Import Styles.
+ */
 import styles from './index.less';
 
 /**
  * The entry point of the application.
  */
 
-// TODO: Inject the GraphQL endpoint from the build process.
+// TODO: Inject the GraphQL endpoint by the build process.
 Relay.injectNetworkLayer(
   new Relay.DefaultNetworkLayer('http://localhost:8088', {
     headers: {
+      // TODO: Add your own authentication mechanism here.
       Authorization: '1234567890'
     }
   })
@@ -38,6 +46,6 @@ ReactDOM.render(
   <RelayRouter
     history={history}
     routes={routes}
-    />,
+  />,
   document.getElementById('root')
 );

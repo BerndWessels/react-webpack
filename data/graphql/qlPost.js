@@ -29,6 +29,7 @@ import {
   connectionArgs,
   connectionDefinitions,
   connectionFromArray,
+  connectionFromArraySlice,
   fromGlobalId,
   globalIdField,
   mutationWithClientMutationId,
@@ -45,6 +46,25 @@ import db from '../database/db';
  */
 import {nodeInterface, nodeField, registerType} from './ql';
 import qlPerson from './qlPerson';
+import qlComment from './qlComment';
+
+/**
+ * Create the associations.
+ */
+var {connectionType: commentsConnection} = connectionDefinitions({
+  name: 'comment',
+  nodeType: qlComment,
+  connectionFields: () => ({
+    totalCount: {
+      type: GraphQLInt,
+      resolve: (connection) => connection.totalCount,
+      description: `A count of the total number of objects in this connection, ignoring pagination.
+This allows a client to fetch the first five objects by passing "5" as the
+argument to "first", then fetch the total count so it could display "5 of 83",
+for example.`
+    }
+  })
+});
 
 /**
  * Create the GraphQL Type.
@@ -74,6 +94,33 @@ var qlPost = new GraphQLObjectType({
       type: qlPerson,
       resolve(dbPost){
         return dbPost.getPerson();
+      }
+    },
+    comments: {
+      // This serves the 'post to comment' connection with support for paging.
+      type: commentsConnection,
+      // We can extend the connection args with our own if we want to.
+      args: {...{}, ...connectionArgs},
+      // Resolve the requested page of comments.
+      resolve(dbPost, args) {
+        // Calculate the database offset to the requested page.
+        var offset = args.after ? cursorToOffset(args.after) + 1 : args.before ? Math.max(cursorToOffset(args.before) - args.last, 0) : 0;
+        // Query the database.
+        return db.comment.findAndCountAll({
+            where: {postId: dbPost.id},
+            offset: offset,
+            limit: args.first ? args.first : args.last ? args.last : undefined
+          })
+          .then(function (result) {
+            // Combine the returned connection result with the extra totalCount property.
+            return {
+              ...connectionFromArraySlice(result.rows, args, {
+                sliceStart: offset,
+                arrayLength: result.count
+              }),
+              totalCount: result.count
+            }
+          });
       }
     }
   }),

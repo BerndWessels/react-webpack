@@ -21,14 +21,15 @@ import Relay from 'react-relay';
 /**
  * Import UX components.
  */
+import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
 
 /**
  * The component.
  */
-class Users extends React.Component {
+class Comment extends React.Component {
   // Expected properties.
   static propTypes = {
-    viewer: React.PropTypes.object.isRequired
+    comment: React.PropTypes.object.isRequired
   };
   // Initialize the component.
   constructor(props) {
@@ -36,26 +37,21 @@ class Users extends React.Component {
   }
   // Render the component.
   render() {
-    // Return the component UI.
     return (
-      <div>
-        <h1>Users list</h1>
-        <ul>
-          {this.props.viewer.id}
-        </ul>
-      </div>
+      <li>{this.props.comment.content}</li>
     );
   }
 }
 
 /**
- * The users data container.
+ * The data container.
  */
-export default Relay.createContainer(Users, {
+export default Relay.createContainer(Comment, {
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on Person {
+    comment: () => Relay.QL`
+      fragment on Comment {
         id
+        content
       }
     `
   }
