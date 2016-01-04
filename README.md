@@ -1,3 +1,5 @@
+# Current Version 0.2.2
+
 # Overview
 
 This is a template you can fork and clone to develop data driven React/Relay SPA Websites using a single GraphQL endpoint.
@@ -12,14 +14,12 @@ If for any reason you have to stick to Babel 5 then use 0.1.x versions of this r
 
 Some of the modules might still be a bit wonky since Babel 6 support is just slowly making it into the eco-system.
 
-    "babel-plugin-react-transform": "^2.0.0-beta1",
+    "babel-plugin-react-transform": "^2.0.0",
     "babel-preset-es2015": "^6.0.0",
     "babel-preset-react": "^6.0.0",
     "babel-preset-stage-0": "^6.0.0",
 
 Make sure you get the latest versions. Otherwise you might run into bugs that have already been fixed.
-
-Also keep an eye on `babel-plugin-react-transform`. It is still experimental but will hopefully soon become stable.
 
 # Features
 * React
