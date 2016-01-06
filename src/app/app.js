@@ -12,6 +12,20 @@ import Relay from 'react-relay';
 import {Link} from 'react-router';
 
 /**
+ * Import Mutations.
+ */
+
+/**
+ * Import Components.
+ */
+
+/**
+ * Import UX components.
+ */
+import { Nav, Navbar, NavbarBrand, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
+import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+
+/**
  * The component.
  */
 class App extends React.Component {
@@ -31,9 +45,35 @@ class App extends React.Component {
     // Return the component UI.
     return (
       <div>
-        <h1>App</h1>
-        <Link to={`/`} activeClassName="home">Home</Link>
-        <Link to={`/users`} activeClassName="active">Users</Link>
+        <Navbar inverse>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <a href="#">React-Webpack</a>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              <IndexLinkContainer to={`/`}>
+                <NavItem eventKey={1}>Home</NavItem>
+              </IndexLinkContainer>
+              <LinkContainer to={`/users`}>
+                <NavItem>Users</NavItem>
+              </LinkContainer>
+              <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+                <MenuItem eventKey={3.1}>Action</MenuItem>
+                <MenuItem eventKey={3.2}>Another action</MenuItem>
+                <MenuItem eventKey={3.3}>Something else here</MenuItem>
+                <MenuItem divider/>
+                <MenuItem eventKey={3.3}>Separated link</MenuItem>
+              </NavDropdown>
+            </Nav>
+            <Nav pullRight>
+              <NavItem eventKey={1} href="#">Link Right</NavItem>
+              <NavItem eventKey={2} href="#">Link Right</NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
         {children}
       </div>
     );
@@ -46,9 +86,9 @@ class App extends React.Component {
 export default Relay.createContainer(App, {
   fragments: {
     viewer: () => Relay.QL`
-          fragment on Person {
-            id
-          }
-        `
+              fragment on Person {
+                id
+              }
+            `
   }
 });

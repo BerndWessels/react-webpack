@@ -21,6 +21,7 @@ import Relay from 'react-relay';
 /**
  * Import UX components.
  */
+import { Grid, Row, Col } from 'react-bootstrap';
 
 /**
  * The component.
@@ -34,16 +35,21 @@ class Users extends React.Component {
   constructor(props) {
     super(props);
   }
+
   // Render the component.
   render() {
     // Return the component UI.
     return (
-      <div>
-        <h1>Users list</h1>
-        <ul>
-          {this.props.viewer.id}
-        </ul>
-      </div>
+      <Grid>
+        <Row>
+          <Col xs={12}>
+            <h1>Users list</h1>
+            <ul>
+              {this.props.viewer.id}
+            </ul>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

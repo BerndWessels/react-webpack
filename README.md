@@ -1,4 +1,4 @@
-# Current Version 0.2.2
+# Current Version 0.2.3
 
 # Overview
 
@@ -21,12 +21,17 @@ Some of the modules might still be a bit wonky since Babel 6 support is just slo
 
 Make sure you get the latest versions. Otherwise you might run into bugs that have already been fixed.
 
+# Todo
+
+Remove `"webpack-sources": "^0.1.0"` from `package.json` as soon as [this issue](https://github.com/webpack/extract-text-webpack-plugin/issues/143) is resolved.
+
 # Features
 * React
 * Relay
 * GraphQL
 * MySQL
 * Webpack
+* React Bootstrap
 * Heavily commented webpack configuration with reasonable defaults.
 * Latest JSX, ES6, and ES7 support with babel 6.
 * Source maps included in all builds.

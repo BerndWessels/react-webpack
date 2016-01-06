@@ -23,7 +23,8 @@ import Post from './post';
 /**
  * Import UX components.
  */
-import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader, Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 /**
  * The component.
@@ -68,20 +69,25 @@ class Home extends React.Component {
   // Render the component.
   render() {
     return (
-      <div>
-        <h1>Home {this.props.viewer.firstName} - {this.props.viewer.email}</h1>
-        <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
-        <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
-        <Input ref="pageSize" type="text" label="Posts per page"
-               defaultValue={this.props.relay.variables.first}/>
-        <Button onClick={this._handleGetPrevPage}>Get Prev Page</Button>
-        <Button onClick={this._handleGetNextPage}>Get Next Page</Button>
-        <ul>
-          {this.props.viewer.posts.edges.map(edge =>
-            <Post key={edge.cursor} post={edge.node}/>
-          )}
-        </ul>
-      </div>
+      <Grid>
+        <Row>
+          <Col xs={12}>
+            <PageHeader>Home</PageHeader>
+            <h1>{this.props.viewer.firstName} - {this.props.viewer.email}</h1>
+            <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
+            <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
+            <Input ref="pageSize" type="text" label="Posts per page"
+                   defaultValue={this.props.relay.variables.first}/>
+            <Button onClick={this._handleGetPrevPage}>Get Prev Page</Button>
+            <Button onClick={this._handleGetNextPage}>Get Next Page</Button>
+            <ul>
+              {this.props.viewer.posts.edges.map(edge =>
+                <Post key={edge.cursor} post={edge.node}/>
+              )}
+            </ul>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

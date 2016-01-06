@@ -1,6 +1,6 @@
 {
   "name": "react-webpack",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "React Relay SQL Webpack SPA Babel6 Example.",
   "main": "index.js",
   "scripts": {
@@ -26,15 +26,15 @@
   },
   "dependencies": {
     "bootstrap": "^3.0.0",
-    "history": "1.13.1",
     "lodash": "^3.0.0",
     "mysql": "^2.0.0",
     "react": "^0.14.0",
     "react-bootstrap": "^0.28.0",
     "react-dom": "^0.14.0",
     "react-relay": "^0.6.0",
-    "react-router": "^1.0.0",
-    "react-router-relay": "^0.8.0",
+    "react-router": ">=2.0.0-rc2",
+    "react-router-bootstrap": "^0.20.0",
+    "react-router-relay": "^0.9.0",
     "sequelize": "^3.0.0"
   },
   "devDependencies": {
@@ -56,7 +56,7 @@
     "css-loader": "^0.23.0",
     "express": "^4.0.0",
     "express-graphql": "^0.4.0",
-    "extract-text-webpack-plugin": "^0.9.0",
+    "extract-text-webpack-plugin": "^1.0.0",
     "faker": "^3.0.0",
     "file-loader": "^0.8.0",
     "graphiql": "^0.4.0",
@@ -88,6 +88,7 @@
     "relay-local-schema": "^0.3.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.0.0",
-    "webpack-dev-server": "^1.0.0"
+    "webpack-dev-server": "^1.0.0",
+    "webpack-sources": "^0.1.0"
   }
 }

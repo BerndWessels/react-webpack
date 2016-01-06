@@ -7,12 +7,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import createHistory from 'history/lib/createBrowserHistory';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
 import {RelayRouter} from 'react-router-relay';
 import ReactRouterRelay from 'react-router-relay';
+import { browserHistory } from 'react-router';
 
 /**
  * Import Routes.
@@ -38,13 +38,10 @@ Relay.injectNetworkLayer(
   })
 );
 
-// Use HTML5 browser history navigation.
-const history = createHistory();
-
 // Render and run the application.
 ReactDOM.render(
   <RelayRouter
-    history={history}
+    history={browserHistory}
     routes={routes}
   />,
   document.getElementById('root')
