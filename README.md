@@ -1,4 +1,4 @@
-# Current Version 0.2.5
+# Current Version 0.2.6
 
 # Overview
 
@@ -10,20 +10,13 @@ It also shows how to integrate access to databases like mysql or postgres.
 
 Starting with version 0.2.0 we moved on to Babel 6.
 
-If for any reason you have to stick to Babel 5 then use 0.1.x versions of this repo.
+If for any reason you have to stick to Babel 5 then use 0.1.x version (outdated) of this repo.
 
-Some of the modules might still be a bit wonky since Babel 6 support is just slowly making it into the eco-system.
-
-    "babel-plugin-react-transform": "^2.0.0",
-    "babel-preset-es2015": "^6.0.0",
-    "babel-preset-react": "^6.0.0",
-    "babel-preset-stage-0": "^6.0.0",
-
-Make sure you get the latest versions. Otherwise you might run into bugs that have already been fixed.
+Make sure you get the latest versions. Otherwise you might run into bugs that have already been fixed. `npm outdated` is your friend.
 
 # Todo
 
-Remove `"webpack-sources": "^0.1.0"` from `package.json` as soon as [this issue](https://github.com/webpack/extract-text-webpack-plugin/issues/143) is resolved.
+Remember that `babel-relay-plugin` will most likely be renamed soon to `babel-plugin-relay` - which means that the `babel-relay-plugin-loader` also needs to be updated.
 
 # Features
 * React
