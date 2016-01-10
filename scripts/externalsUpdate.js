@@ -19,6 +19,10 @@ import reactRelay from 'react-relay/package.json';
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 export default task('update externals', async () => {
 
+  // make sure the externals folder exists
+  if(!fs.existsSync(path.join(__dirname, '../public/externals'))){
+    fs.mkdirSync(path.join(__dirname, '../public/externals'));
+  }
   // react
   console.log('copying react v' + react.version);
   fs.writeFileSync(path.join(__dirname, '../public/externals/react-with-addons.' + react.version + '.js'), fs.readFileSync(path.join(__dirname, '../node_modules/react/dist/react-with-addons.js')));
