@@ -24,6 +24,11 @@ import Relay from 'react-relay';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 /**
+ * Import Internationalization.
+ */
+import {FormattedMessage} from 'react-intl';
+
+/**
  * The component.
  */
 class Users extends React.Component {
@@ -43,7 +48,13 @@ class Users extends React.Component {
       <Grid>
         <Row>
           <Col xs={12}>
-            <h1>Users list</h1>
+            <h1>
+              <FormattedMessage
+                id="users.title"
+                description="The users-feature title"
+                defaultMessage="Users List"
+              />
+            </h1>
             <ul>
               {this.props.viewer.id}
             </ul>

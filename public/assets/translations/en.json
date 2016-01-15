@@ -1,5 +1,8 @@
 {
-  "application": {
-    "title": "Web"
-  }
+  "App.Navbar.Brand": "React-Webpack",
+  "App.Navbar.Language.German": "German",
+  "App.Navbar.Language.English": "English",
+  "home.greeting": "Welcome {firstName} {lastName}!",
+  "home.email": "Change your account details",
+  "users.title": "Users List"
 }

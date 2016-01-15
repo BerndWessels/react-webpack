@@ -38,7 +38,8 @@ function createPerson() {
   return db.person.create({
       firstName: Faker.name.firstName(),
       lastName: Faker.name.lastName(),
-      email: Faker.internet.email()
+      email: Faker.internet.email(),
+      language: 'en'
     })
     .then(person => {
       // Create 10 posts for each person.

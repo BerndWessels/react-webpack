@@ -8,12 +8,14 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
 import {Link} from 'react-router';
 
 /**
  * Import Mutations.
  */
+import UpdatePersonMutation from '../mutations/updatePersonMutation';
 
 /**
  * Import Components.
@@ -24,6 +26,11 @@ import {Link} from 'react-router';
  */
 import { Nav, Navbar, NavbarBrand, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+
+/**
+ * Import Internationalization.
+ */
+import {IntlProvider, FormattedMessage} from 'react-intl';
 
 /**
  * The component.
@@ -38,17 +45,51 @@ class App extends React.Component {
   constructor(props) {
     super(props);
   }
+
+  // User wants to change his language setting.
+  handleLanguageChange = (eventKey) => {
+    // We commit the update directly to the database.
+    Relay.Store.commitUpdate(new UpdatePersonMutation({
+      person: this.props.viewer,
+      language: eventKey
+    }), {
+      onFailure: (err) => {
+        // TODO: Deal with it!
+        console.log(err);
+      },
+      onSuccess: (result) => {
+        // TODO: Maybe nothing todo here?
+      }
+    });
+  };
+  // Send the current user language setting to the index component.
+  updateApplicationLanguage(language) {
+    setTimeout(()=> {
+      var languageChangeEvent = document.createEvent('CustomEvent');
+      languageChangeEvent.initCustomEvent('languageChangeEvent', true, true, {language: language});
+      window.dispatchEvent(languageChangeEvent);
+    });
+  }
+
   // Render the component.
   render() {
     // Get the properties.
     const {viewer, children} = this.props;
+    // Update the application language if necessary.
+    this.updateApplicationLanguage(viewer.language);
     // Return the component UI.
     return (
       <div>
         <Navbar inverse>
           <Navbar.Header>
             <Navbar.Brand>
-              <a href="#">React-Webpack</a>
+              <IndexLinkContainer to={`/`}>
+                <a>
+                  <FormattedMessage id="App.Navbar.Brand"
+                                    description="The application's navigation bar brand title."
+                                    defaultMessage="React-Webpack"/>
+                </a>
+              </IndexLinkContainer>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -68,9 +109,17 @@ class App extends React.Component {
                 <MenuItem eventKey={3.3}>Separated link</MenuItem>
               </NavDropdown>
             </Nav>
-            <Nav pullRight>
-              <NavItem eventKey={1} href="#">Link Right</NavItem>
-              <NavItem eventKey={2} href="#">Link Right</NavItem>
+            <Nav pullRight onSelect={this.handleLanguageChange} activeKey={this.props.viewer.language}>
+              <NavItem eventKey={'de'}>
+                <FormattedMessage id="App.Navbar.Language.German"
+                                  description="The application's navigation bar german language selection."
+                                  defaultMessage="German"/>
+              </NavItem>
+              <NavItem eventKey={'en'}>
+                <FormattedMessage id="App.Navbar.Language.English"
+                                  description="The application's navigation bar english language selection."
+                                  defaultMessage="English"/>
+              </NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -87,7 +136,8 @@ export default Relay.createContainer(App, {
   fragments: {
     viewer: () => Relay.QL`
               fragment on Person {
-                id
+                language,
+                ${UpdatePersonMutation.getFragment('person')}
               }
             `
   }

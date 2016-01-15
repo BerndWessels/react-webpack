@@ -17,5 +17,6 @@ process.env['NODE_ENV'] = 'development';
 
 module.exports = require('./webpack.make')({
   BUILD: false,
-  TEST: false
+  TEST: false,
+  TRANSLATE: false
 });

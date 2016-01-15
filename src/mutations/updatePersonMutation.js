@@ -25,7 +25,11 @@ class UpdatePersonMutation extends Relay.Mutation {
   // input to the mutation. Our ‘updatePerson’ mutation takes exactly
   // one variable as input – the ID of the story to like.
   getVariables() {
-    return {id: this.props.person.id, email: this.props.email};
+    return {
+      id: this.props.person.id,
+      email: this.props.email,
+      language: this.props.language
+    };
   }
 
   // Use this method to design a ‘fat query’ – one that represents every
@@ -39,6 +43,7 @@ class UpdatePersonMutation extends Relay.Mutation {
       fragment on UpdatePersonPayload {
         person {
           email,
+          language
         }
       }
     `;
@@ -66,7 +71,8 @@ class UpdatePersonMutation extends Relay.Mutation {
     person: () => Relay.QL`
       fragment on Person {
         id,
-        email
+        email,
+        language
       }
     `
   };
@@ -79,7 +85,8 @@ class UpdatePersonMutation extends Relay.Mutation {
     return {
       person: {
         id: this.props.person.id,
-        email: this.props.email
+        email: this.props.email,
+        language: this.props.language
       }
     };
   }

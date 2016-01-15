@@ -30,6 +30,13 @@
               }
             ]
           }
+        ],
+        [
+          "react-intl",
+          {
+            "messagesDir": "./build/i18n/",
+            "enforceDescriptions": true
+          }
         ]
       ]
     },

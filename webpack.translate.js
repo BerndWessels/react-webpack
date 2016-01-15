@@ -8,7 +8,7 @@
  */
 
 /**
- * Webpack config for tests
+ * Webpack config for development
  */
 
 // Force development mode for all build components.
@@ -17,6 +17,6 @@ process.env['NODE_ENV'] = 'development';
 
 module.exports = require('./webpack.make')({
   BUILD: false,
-  TEST: true,
-  TRANSLATE: false
+  TEST: false,
+  TRANSLATE: true
 });

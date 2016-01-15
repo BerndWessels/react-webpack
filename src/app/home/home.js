@@ -23,8 +23,13 @@ import Post from './post';
 /**
  * Import UX components.
  */
-import { Grid, Row, Col, PageHeader, Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader, Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input, Pagination } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+
+/**
+ * Import Internationalization.
+ */
+import {FormattedNumber, FormattedMessage} from 'react-intl';
 
 /**
  * The component.
@@ -38,56 +43,103 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
   }
+
   // Handle the button click event.
   _handleUpdatePerson = () => {
-    Relay.Store.update(new UpdatePersonMutation({person: this.props.viewer, email: this.refs.email.getValue()}));
-  };
-  // Handle the button click event.
-  _handleGetPrevPage = () => {
-    // update relay query parameters
-    this.props.relay.setVariables({
-      forward: false,
-      first: null,
-      after: null,
-      last: this.refs.pageSize.getValue(),
-      before: this.props.viewer.posts.pageInfo.startCursor
+    // We commit the update directly to the database.
+    Relay.Store.commitUpdate(new UpdatePersonMutation({
+      person: this.props.viewer,
+      email: this.refs.email.getValue()
+    }), {
+      onFailure: (err) => {
+        // TODO: Deal with it!
+        console.log(err);
+      },
+      onSuccess: (result) => {
+        // TODO: Maybe nothing todo here?
+      }
     });
   };
-  // Handle the button click event.
-  _handleGetNextPage = () => {
-    // read current params
-    // var count = this.props.relay.variables.postsPerPage;
-    // update params
+  // The user changed the posts page size.
+  _handlePostsPageSizeChange = (e) => {
+    var val = parseInt(e.target.value);
+    if (isNaN(val)) {
+      return;
+    }
+    // update relay query parameters
     this.props.relay.setVariables({
-      forward: true,
-      first: this.refs.pageSize.getValue(),
-      after: this.props.viewer.posts.pageInfo.endCursor,
-      last: null,
-      before: null
+      limit: val
+    });
+  };
+  // The user changed the current posts page index.
+  _handlePostsPageIndexChange = (e, pagingEvent) => {
+    // update relay query parameters
+    this.props.relay.setVariables({
+      offset: (pagingEvent.eventKey - 1) * this.props.relay.variables.limit
     });
   };
   // Render the component.
   render() {
+    // Calculate stuff.
+    var postsPageSize = this.props.relay.variables.limit;
+    var totalPostsPages = Math.floor(this.props.viewer.posts.totalCount / postsPageSize);
+    var currentPostsPage = Math.floor(this.props.viewer.posts.pageInfo.startCursor / postsPageSize);
     return (
-      <Grid>
-        <Row>
-          <Col xs={12}>
-            <PageHeader>Home</PageHeader>
-            <h1>{this.props.viewer.firstName} - {this.props.viewer.email}</h1>
-            <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
-            <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
-            <Input ref="pageSize" type="text" label="Posts per page"
-                   defaultValue={this.props.relay.variables.first}/>
-            <Button onClick={this._handleGetPrevPage}>Get Prev Page</Button>
-            <Button onClick={this._handleGetNextPage}>Get Next Page</Button>
+      <form>
+        <Grid>
+          <Row>
+            <Col xs={12}>
+              <PageHeader>
+                <FormattedMessage
+                  id="home.greeting"
+                  description="Welcome greeting to the user"
+                  defaultMessage="Welcome {firstName} {lastName}!"
+                  values={{firstName: this.props.viewer.firstName, lastName: this.props.viewer.lastName}}
+                />
+              </PageHeader>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <Pagination
+                first
+                last
+                prev
+                next
+                ellipsis
+                items={totalPostsPages}
+                maxButtons={3}
+                activePage={currentPostsPage + 1}
+                onSelect={this._handlePostsPageIndexChange}/>
+            </Col>
+            <Input ref="pageSize" type="number" label="Posts per page"
+                   defaultValue={this.props.relay.variables.limit} onChange={this._handlePostsPageSizeChange}
+                   labelClassName="col-xs-2" wrapperClassName="col-xs-4"/>
+
+          </Row>
+          <Row>
             <ul>
               {this.props.viewer.posts.edges.map(edge =>
                 <Post key={edge.cursor} post={edge.node}/>
               )}
             </ul>
-          </Col>
-        </Row>
-      </Grid>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <PageHeader>
+                <FormattedMessage
+                  id="home.email"
+                  description="Test Section"
+                  defaultMessage="Change your account details"
+                  values={{firstName: this.props.viewer.firstName, lastName: this.props.viewer.lastName}}
+                />
+              </PageHeader>
+              <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
+              <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
+            </Col>
+          </Row>
+        </Grid>
+      </form>
     );
   }
 }
@@ -97,26 +149,20 @@ class Home extends React.Component {
  */
 export default Relay.createContainer(Home, {
   initialVariables: {
-    forward: true,
-    first: 2,
-    after: null,
-    last: null,
-    before: null
+    limit: 2,
+    offset: 0
   },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Person {
         firstName
+        lastName
         email
-        posts(first: $first, after: $after) @include(if: $forward) {
-          ${postsFragment}
-        },
-        posts(last: $last, before: $before) @skip(if: $forward) {
+        posts(limit: $limit, offset: $offset) {
           ${postsFragment}
         },
         ${UpdatePersonMutation.getFragment('person')}
-      }
-    `
+      }`
   }
 });
 
@@ -135,5 +181,4 @@ var postsFragment = Relay.QL`
       startCursor
       endCursor
     }
-  }
-`;
+  }`;

@@ -37,16 +37,24 @@ import {
 } from 'graphql-relay';
 
 /**
- * Import Database Entities.
+ * Import GraphQL helpers.
  */
-import db from '../database/db';
+import {
+  nodeInterface,
+  nodeField,
+  registerType
+} from './ql';
 
 /**
  * Import GraphQL Types.
  */
-import {nodeInterface, nodeField, registerType} from './ql';
 import qlPerson from './qlPerson';
 import qlComment from './qlComment';
+
+/**
+ * Import Database Entities.
+ */
+import db from '../database/db';
 
 /**
  * Create the associations.

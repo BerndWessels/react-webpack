@@ -30,12 +30,20 @@ type PageInfo {
   endCursor: String
 }
 
+type paginationInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: Int
+  endCursor: Int
+}
+
 type Person implements Node {
   id: ID!
   firstName: String
   lastName: String
   email: String
-  posts(after: String, first: Int, before: String, last: Int): postConnection
+  language: String
+  posts(offset: Int, limit: Int): postConnection
 }
 
 type Post implements Node {
@@ -47,14 +55,14 @@ type Post implements Node {
 }
 
 type postConnection {
-  pageInfo: PageInfo!
+  pageInfo: paginationInfo!
   edges: [postEdge]
   totalCount: Int
 }
 
 type postEdge {
   node: Post
-  cursor: String!
+  cursor: Int!
 }
 
 type Query {
@@ -64,7 +72,8 @@ type Query {
 
 input UpdatePersonInput {
   id: ID!
-  email: String!
+  email: String
+  language: String
   clientMutationId: String!
 }
 

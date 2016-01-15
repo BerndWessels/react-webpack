@@ -38,30 +38,42 @@ import {
 } from 'graphql-relay';
 
 /**
+ * Import GraphQL Helpers.
+ */
+import {
+  nodeInterface,
+  nodeField,
+  registerType,
+  paginationDefinitions,
+  paginationArgs,
+  paginationFromArraySlice
+} from './ql';
+
+/**
+ * Import GraphQL Types.
+ */
+import qlPost from './qlPost';
+
+/**
  * Import Database Access.
  */
 import db from '../database/db';
 
 /**
- * Import GraphQL Types.
- */
-import {nodeInterface, nodeField, registerType} from './ql';
-import qlPost from './qlPost';
-
-/**
  * Create the associations.
  */
-var {connectionType: postsConnection} = connectionDefinitions({
+var {connectionType: postsConnection} = paginationDefinitions({
   name: 'post',
   nodeType: qlPost,
+  edgeFields: () => ({}),
   connectionFields: () => ({
     totalCount: {
       type: GraphQLInt,
       resolve: (connection) => connection.totalCount,
       description: `A count of the total number of objects in this connection, ignoring pagination.
-This allows a client to fetch the first five objects by passing "5" as the
-argument to "first", then fetch the total count so it could display "5 of 83",
-for example.`
+    This allows a client to fetch the first five objects by passing "5" as the
+    argument to "first", then fetch the total count so it could display "5 of 83",
+    for example.`
     }
   })
 });
@@ -95,28 +107,26 @@ var qlPerson = new GraphQLObjectType({
     email: {
       type: GraphQLString
     },
+    language: {
+      type: GraphQLString
+    },
     posts: {
       // This serves the 'person to post' connection with support for paging.
       type: postsConnection,
       // We can extend the connection args with our own if we want to.
-      args: {...{}, ...connectionArgs},
+      args: {...{}, ...paginationArgs},
       // Resolve the requested page of posts.
-      resolve(dbPerson, args) {
-        // Calculate the database offset to the requested page.
-        var offset = args.after ? cursorToOffset(args.after) + 1 : args.before ? Math.max(cursorToOffset(args.before) - args.last, 0) : 0;
+      resolve(dbPerson, {offset, limit}) {
         // Query the database.
         return db.post.findAndCountAll({
             where: {personId: dbPerson.id},
             offset: offset,
-            limit: args.first ? args.first : args.last ? args.last : undefined
+            limit: limit
           })
           .then(function (result) {
             // Combine the returned connection result with the extra totalCount property.
             return {
-              ...connectionFromArraySlice(result.rows, args, {
-                sliceStart: offset,
-                arrayLength: result.count
-              }),
+              ...paginationFromArraySlice(result.rows, offset, limit, offset, result.count),
               totalCount: result.count
             }
           });

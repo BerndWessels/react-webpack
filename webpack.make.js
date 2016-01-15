@@ -30,6 +30,7 @@ module.exports = function makeWebpackConfig(options) {
    */
   var BUILD = !!options.BUILD;
   var TEST = !!options.TEST;
+  var TRANSLATE = !!options.TRANSLATE;
 
   /**
    * Config
@@ -69,7 +70,24 @@ module.exports = function makeWebpackConfig(options) {
    * Karma will handle setting it up for you when it's a test build
    */
   if (TEST) {
-    config.output = {}
+    config.output = {};
+  } else if (TRANSLATE) {
+    config.output = {
+      // Absolute output directory
+      path: __dirname + '/build/public',
+
+      // Output path from the view of the page
+      // Uses webpack-dev-server in development
+      publicPath: '',
+
+      // Filename for entry points
+      // Only adds hash in build mode
+      filename: '[name].bundle.js',
+
+      // Filename for non-entry points
+      // Only adds hash in build mode
+      chunkFilename: '[name].bundle.js'
+    };
   } else {
     config.output = {
       // Absolute output directory
@@ -86,7 +104,7 @@ module.exports = function makeWebpackConfig(options) {
       // Filename for non-entry points
       // Only adds hash in build mode
       chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js'
-    }
+    };
   }
 
   /**
@@ -144,7 +162,14 @@ module.exports = function makeWebpackConfig(options) {
       // Allow loading html through js
       test: /\.html$/,
       loader: 'raw'
-    }]
+    }, {
+      // JSON LOADER
+      // Reference: https://github.com/webpack/json-loader
+      // Allow loading JSNO
+      test: /\.json$/,
+      loader: 'json'
+    }
+    ]
   };
 
   // ISPARTA LOADER
@@ -181,7 +206,7 @@ module.exports = function makeWebpackConfig(options) {
   };
 
   // Skip loading css in test mode
-  if (TEST) {
+  if (TEST || TRANSLATE) {
     // Reference: https://github.com/webpack/null-loader
     // Return an empty module
     lessLoader.loader = 'null'
@@ -211,12 +236,12 @@ module.exports = function makeWebpackConfig(options) {
     // Extract css files
     // Disabled when in test mode or not in build mode
     new ExtractTextPlugin('[name].[hash].css', {
-      disable: !BUILD || TEST
+      disable: !BUILD || TEST || TRANSLATE
     })
   ];
 
   // Skip rendering index.html in test mode
-  if (!TEST) {
+  if (!TEST && !TRANSLATE) {
     // Reference: https://github.com/ampedandwired/html-webpack-plugin
     // Render index.html
     config.plugins.push(
@@ -255,7 +280,7 @@ module.exports = function makeWebpackConfig(options) {
   }
 
   // Add dev specific plugins
-  if (!TEST && !BUILD) {
+  if (!TEST && !TRANSLATE && !BUILD) {
     config.plugins.push(
       // https://webpack.github.io/docs/list-of-plugins.html#occurenceorderplugin
       new webpack.optimize.OccurenceOrderPlugin(),

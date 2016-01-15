@@ -28,6 +28,10 @@ export default function (sequelize, DataTypes) {
         validate: {
           isEmail: true
         }
+      },
+      language: {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     },
     // Declare the associations.

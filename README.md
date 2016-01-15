@@ -1,10 +1,12 @@
-# Current Version 0.2.6
+# Current Version 0.3.0
 
 # Overview
 
 This is a template you can fork and clone to develop data driven React/Relay SPA Websites using a single GraphQL endpoint.
 
 It also shows how to integrate access to databases like mysql or postgres.
+
+And we will keep on adding other important SPA related components and processes for internationalization, whitelabeling and everything else you need to kick-start your unicorn.
 
 # Babel 6
 
@@ -25,6 +27,8 @@ Remember that `babel-relay-plugin` will most likely be renamed soon to `babel-pl
 * MySQL
 * Webpack
 * React Bootstrap
+* React-Intl V2 Internationalization
+* Windowed Pagination Connection
 * Heavily commented webpack configuration with reasonable defaults.
 * Latest JSX, ES6, and ES7 support with babel 6.
 * Source maps included in all builds.
@@ -84,6 +88,17 @@ You can copy the `dist` content now to your production environment.
 If you want to run the production version locally to make sure it works, you can run `npm run build:serve`.
 This will serve the `dist` folder on port `8080`. Just make sure you serve the schema as well.
 
+# i18n
+
+We are using [react-intl v2](https://github.com/yahoo/react-intl/issues/162) to provide translations and internationalization.
+
+For each language you want to provide you have to add a `[id].json` in the `public/assets/translations` folder.
+
+To Extract the default messages from your project and merge them into all your language files run `npm run translations:extract`.
+Already existing translations within your language files will not be touched. Only new default messages will be added.
+
+You can also modify and extend the `translationsExtract` script with your own tools and workflows. This gives you plenty of ways to deal with your translator.
+
 ## Scripts
 
 * `npm start` - start development server, try it by opening `http://localhost:8080/` or with browser sync `http://localhost:3000/`
@@ -94,6 +109,7 @@ This will serve the `dist` folder on port `8080`. Just make sure you serve the s
 * `npm run database:fake` - create/override the database with fake data
 * `npm run schema:update` - update the Relay GraphQL schema
 * `npm run schema:serve` - serve the Relay GraphQL data endpoint
+* `npm run translations:extract` - extracts all default messages and merges them into the translations files.
 
 See what each script does by looking at the `scripts` section in [package.json](./package.json).
 
