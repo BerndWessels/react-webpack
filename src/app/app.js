@@ -46,6 +46,31 @@ class App extends React.Component {
     super(props);
   }
 
+  // Invoked once, both on the client and server, immediately before the initial rendering occurs.
+  // If you call setState within this method,
+  // render() will see the updated state and will be executed only once despite the state change.
+  componentWillMount() {
+    // Update the application language if necessary.
+    this.updateApplicationLanguage(this.props.viewer.language);
+  }
+
+  // Invoked when a component is receiving new props. This method is not called for the initial render.
+  // Use this as an opportunity to react to a prop transition before render() is called by updating the state using this.setState().
+  // The old props can be accessed via this.props. Calling this.setState() within this function will not trigger an additional render.
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.viewer.language !== this.props.viewer.language) {
+      // Update the application language if necessary.
+      this.updateApplicationLanguage(nextProps.viewer.language);
+    }
+  }
+
+  // Send the current user language setting to the index component.
+  updateApplicationLanguage(language) {
+    var languageChangeEvent = document.createEvent('CustomEvent');
+    languageChangeEvent.initCustomEvent('languageChangeEvent', true, true, {language: language});
+    window.dispatchEvent(languageChangeEvent);
+  }
+
   // User wants to change his language setting.
   handleLanguageChange = (eventKey) => {
     // We commit the update directly to the database.
@@ -62,21 +87,11 @@ class App extends React.Component {
       }
     });
   };
-  // Send the current user language setting to the index component.
-  updateApplicationLanguage(language) {
-    setTimeout(()=> {
-      var languageChangeEvent = document.createEvent('CustomEvent');
-      languageChangeEvent.initCustomEvent('languageChangeEvent', true, true, {language: language});
-      window.dispatchEvent(languageChangeEvent);
-    });
-  }
 
   // Render the component.
   render() {
     // Get the properties.
     const {viewer, children} = this.props;
-    // Update the application language if necessary.
-    this.updateApplicationLanguage(viewer.language);
     // Return the component UI.
     return (
       <div>
