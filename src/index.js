@@ -65,35 +65,47 @@ class Index extends React.Component {
     };
   }
 
+  // Declare the context properties this component exposes.
+  static childContextTypes = {
+    setLocale: React.PropTypes.func
+  };
+
+  // Set the context property values of this component.
+  getChildContext() {
+    return {
+      setLocale: (locale) => {
+        this.setLocale(locale);
+      }
+    };
+  }
+
+  // Change the application language to a new locale.
+  setLocale(locale) {
+    if (this.state.locale !== locale) {
+      switch (locale) {
+        case 'de':
+          this.setState({locale: locale, messages: intlMessagesDE});
+          break;
+        case 'en':
+          this.setState({locale: locale, messages: intlMessagesEN});
+          break;
+      }
+    }
+  }
+
   // Handle the window resize event.
   handleResize = (e) => {
     this.setState({windowWidth: window.innerWidth});
   };
 
-  // Handle the application language change event.
-  handleLanguageChange = (e) => {
-    if (this.state.locale !== e.detail.language) {
-      switch (e.detail.language) {
-        case 'de':
-          this.setState({locale: 'de', messages: intlMessagesDE});
-          break;
-        case 'en':
-          this.setState({locale: 'en', messages: intlMessagesEN});
-          break;
-      }
-    }
-  };
-
   // Setup the component.
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
-    window.addEventListener('languageChangeEvent', this.handleLanguageChange);
   }
 
   // Cleanup the component.
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('languageChangeEvent', this.handleLanguageChange);
   }
 
   // Render the component.
