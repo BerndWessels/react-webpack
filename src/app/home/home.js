@@ -13,7 +13,6 @@ import Relay from 'react-relay';
 /**
  * Import Mutations.
  */
-import UpdatePersonMutation from '../../mutations/updatePersonMutation';
 
 /**
  * Import Components.
@@ -23,7 +22,11 @@ import Post from './post';
 /**
  * Import UX components.
  */
-import { Grid, Row, Col, PageHeader, Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input, Pagination } from 'react-bootstrap';
+import {
+  Grid, Row, Col, PageHeader, Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem,
+  Glyphicon, Input, Pagination, ListGroup, ListGroupItem
+} from 'react-bootstrap';
+
 import { LinkContainer } from 'react-router-bootstrap';
 
 /**
@@ -39,51 +42,65 @@ class Home extends React.Component {
   static propTypes = {
     viewer: React.PropTypes.object.isRequired
   };
+
+  // Expected context properties.
+  static contextTypes = {
+    storeSession: React.PropTypes.func,
+    restoreSession: React.PropTypes.func
+  };
+
   // Initialize the component.
   constructor(props) {
     super(props);
+    // Default state.
+    this.state = {
+      postsPage: 1,
+      postsPageSize: 2,
+      postsTotalPages: 5
+    };
   }
 
-  // Handle the button click event.
-  _handleUpdatePerson = () => {
-    // We commit the update directly to the database.
-    Relay.Store.commitUpdate(new UpdatePersonMutation({
-      person: this.props.viewer,
-      email: this.refs.email.getValue()
-    }), {
-      onFailure: (err) => {
-        // TODO: Deal with it!
-        console.log(err);
-      },
-      onSuccess: (result) => {
-        // TODO: Maybe nothing todo here?
-      }
+  // Invoked once, both on the client and server, immediately before the initial rendering occurs.
+  // If you call setState within this method,
+  // render() will see the updated state and will be executed only once despite the state change.
+  componentWillMount() {
+    // Restore the previous session if any.
+    this.context.restoreSession(this.props.location.pathname, this);
+  }
+
+  // Invoked when a component is receiving new props. This method is not called for the initial render.
+  // Use this as an opportunity to react to a prop transition before render() is called by updating the state using this.setState().
+  // The old props can be accessed via this.props. Calling this.setState() within this function will not trigger an additional render.
+  componentWillReceiveProps(nextProps, nextContext) {
+    // Update the state.
+    this.setState({
+      postsPage: Math.floor(nextProps.relay.variables.offset / nextProps.relay.variables.limit) + 1,
+      postsPageSize: nextProps.relay.variables.limit,
+      postsTotalPages: Math.ceil(nextProps.viewer.posts.totalCount / nextProps.relay.variables.limit)
     });
-  };
+    // Update the session store for this page.
+    this.context.storeSession(this.props.location.pathname, {
+      relay: {offset: nextProps.relay.variables.offset, limit: nextProps.relay.variables.limit}
+    });
+  }
+
   // The user changed the posts page size.
-  _handlePostsPageSizeChange = (e) => {
-    var val = parseInt(e.target.value);
-    if (isNaN(val)) {
-      return;
-    }
+  _handlePostsPageSizeChange = (e, eventKey) => {
     // update relay query parameters
     this.props.relay.setVariables({
-      limit: val
+      limit: eventKey
     });
   };
   // The user changed the current posts page index.
   _handlePostsPageIndexChange = (e, pagingEvent) => {
     // update relay query parameters
     this.props.relay.setVariables({
-      offset: (pagingEvent.eventKey - 1) * this.props.relay.variables.limit
+      offset: (pagingEvent.eventKey - 1) * this.state.postsPageSize
     });
   };
   // Render the component.
   render() {
     // Calculate stuff.
-    var postsPageSize = this.props.relay.variables.limit;
-    var totalPostsPages = Math.floor(this.props.viewer.posts.totalCount / postsPageSize);
-    var currentPostsPage = Math.floor(this.props.viewer.posts.pageInfo.startCursor / postsPageSize);
     return (
       <form>
         <Grid>
@@ -99,43 +116,28 @@ class Home extends React.Component {
               </PageHeader>
             </Col>
           </Row>
-          <Row>
-            <Col xs={6}>
-              <Pagination
-                first
-                last
-                prev
-                next
-                ellipsis
-                items={totalPostsPages}
-                maxButtons={3}
-                activePage={currentPostsPage + 1}
-                onSelect={this._handlePostsPageIndexChange}/>
+          <Row style={{marginBottom: 10}}>
+            <Col xs={12}>
+              <Pagination first last prev next ellipsis maxButtons={3}
+                          items={this.state.postsTotalPages}
+                          activePage={this.state.postsPage}
+                          onSelect={this._handlePostsPageIndexChange}/>
+              <DropdownButton id="postsPageSizeDropdown" onSelect={this._handlePostsPageSizeChange}
+                              className="pagination-dropdown" bsStyle="default" title={this.state.postsPageSize}
+                              style={{marginLeft: 5}}>
+                <MenuItem eventKey={1} active={this.state.postsPageSize == 1}>1</MenuItem>
+                <MenuItem eventKey={2} active={this.state.postsPageSize == 2}>2</MenuItem>
+                <MenuItem eventKey={3} active={this.state.postsPageSize == 3}>3</MenuItem>
+              </DropdownButton>
             </Col>
-            <Input ref="pageSize" type="number" label="Posts per page"
-                   defaultValue={this.props.relay.variables.limit} onChange={this._handlePostsPageSizeChange}
-                   labelClassName="col-xs-2" wrapperClassName="col-xs-4"/>
-
-          </Row>
-          <Row>
-            <ul>
-              {this.props.viewer.posts.edges.map(edge =>
-                <Post key={edge.cursor} post={edge.node}/>
-              )}
-            </ul>
           </Row>
           <Row>
             <Col xs={12}>
-              <PageHeader>
-                <FormattedMessage
-                  id="home.email"
-                  description="Test Section"
-                  defaultMessage="Change your account details"
-                  values={{firstName: this.props.viewer.firstName, lastName: this.props.viewer.lastName}}
-                />
-              </PageHeader>
-              <Input ref="email" type="text" label="Email" defaultValue={this.props.viewer.email}/>
-              <Button onClick={this._handleUpdatePerson}>Update the email!</Button>
+              <ListGroup>
+                {this.props.viewer.posts.edges.map(edge =>
+                  <Post key={edge.cursor} post={edge.node}/>
+                )}
+              </ListGroup>
             </Col>
           </Row>
         </Grid>
@@ -160,8 +162,7 @@ export default Relay.createContainer(Home, {
         email
         posts(limit: $limit, offset: $offset) {
           ${postsFragment}
-        },
-        ${UpdatePersonMutation.getFragment('person')}
+        }
       }`
   }
 });

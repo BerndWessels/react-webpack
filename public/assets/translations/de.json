@@ -3,6 +3,9 @@
   "App.Navbar.Language.German": "Deutsch",
   "App.Navbar.Language.English": "Englisch",
   "home.greeting": "Willkommen {firstName} {lastName}!",
-  "home.email": "Ändern Sie Ihre Details",
-  "users.title": "Benutzer Liste"
+  "users.label.firstName": "Vorname",
+  "users.label.lastName": "Nachname",
+  "users.label.email": "Email",
+  "users.title": "Ändern Sie Ihre Details {firstName} {lastName}",
+  "users.button.save": "Speichern"
 }

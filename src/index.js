@@ -67,7 +67,9 @@ class Index extends React.Component {
 
   // Declare the context properties this component exposes.
   static childContextTypes = {
-    setLocale: React.PropTypes.func
+    setLocale: React.PropTypes.func,
+    storeSession: React.PropTypes.func,
+    restoreSession: React.PropTypes.func
   };
 
   // Set the context property values of this component.
@@ -75,7 +77,9 @@ class Index extends React.Component {
     return {
       setLocale: (locale) => {
         this.setLocale(locale);
-      }
+      },
+      storeSession: this.storeSession,
+      restoreSession: this.restoreSession
     };
   }
 
@@ -90,6 +94,32 @@ class Index extends React.Component {
           this.setState({locale: locale, messages: intlMessagesEN});
           break;
       }
+    }
+  }
+
+  // Store the session data for the given path. TODO: optimize more.
+  storeSession(pathname, nextSessionData) {
+    // We use pathname instead of key because the key is unique in the history.
+    var sessionData = JSON.parse(sessionStorage.getItem(pathname));
+    // Update the session data with the changes.
+    sessionStorage.setItem(pathname, JSON.stringify(Object.assign({}, sessionData, nextSessionData)));
+  }
+
+  // Restore the session data for the given path and component. TODO: optimize more.
+  restoreSession(pathname, component) {
+    // Get the session data.
+    var sessionData = JSON.parse(sessionStorage.getItem(pathname));
+    // Check if there was a previous session.
+    if (!sessionData) {
+      return;
+    }
+    // Update relay variables.
+    if (sessionData.relay) {
+      component.props.relay.setVariables(sessionData.relay);
+    }
+    // Update the state properties.
+    if (sessionData.state) {
+      component.setState(sessionData.state);
     }
   }
 

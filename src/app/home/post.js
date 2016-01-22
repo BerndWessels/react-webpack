@@ -22,7 +22,7 @@ import Comment from './comment';
 /**
  * Import UX components.
  */
-import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input } from 'react-bootstrap';
+import { Button, ButtonToolbar, ButtonGroup, DropdownButton, MenuItem, Glyphicon, Input, ListGroupItem } from 'react-bootstrap';
 
 /**
  * The component.
@@ -39,14 +39,14 @@ class Post extends React.Component {
   // Render the component.
   render() {
     return (
-      <li>
+      <ListGroupItem>
         <div>{this.props.post.title} - {this.props.post.content}</div>
         <ul>
           {this.props.post.comments.edges.map(edge =>
             <Comment key={edge.cursor} comment={edge.node}/>
           )}
         </ul>
-      </li>
+      </ListGroupItem>
     );
   }
 }

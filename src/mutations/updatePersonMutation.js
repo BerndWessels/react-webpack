@@ -27,6 +27,8 @@ class UpdatePersonMutation extends Relay.Mutation {
   getVariables() {
     return {
       id: this.props.person.id,
+      firstName: this.props.firstName,
+      lastName: this.props.lastName,
       email: this.props.email,
       language: this.props.language
     };
@@ -42,7 +44,9 @@ class UpdatePersonMutation extends Relay.Mutation {
     return Relay.QL`
       fragment on UpdatePersonPayload {
         person {
-          email,
+          firstName
+          lastName
+          email
           language
         }
       }
@@ -70,8 +74,10 @@ class UpdatePersonMutation extends Relay.Mutation {
   static fragments = {
     person: () => Relay.QL`
       fragment on Person {
-        id,
-        email,
+        id
+        firstName
+        lastName
+        email
         language
       }
     `
@@ -85,6 +91,8 @@ class UpdatePersonMutation extends Relay.Mutation {
     return {
       person: {
         id: this.props.person.id,
+        firstName: this.props.firstName,
+        lastName: this.props.lastName,
         email: this.props.email,
         language: this.props.language
       }

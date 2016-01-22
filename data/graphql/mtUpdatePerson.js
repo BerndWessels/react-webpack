@@ -55,6 +55,8 @@ export default mutationWithClientMutationId({
   // Fields supplied by the client.
   inputFields: {
     id: {type: new GraphQLNonNull(GraphQLID)},
+    firstName: {type: GraphQLString},
+    lastName: {type: GraphQLString},
     email: {type: GraphQLString},
     language: {type: GraphQLString}
   },
@@ -63,7 +65,7 @@ export default mutationWithClientMutationId({
     person: {
       type: qlPerson,
       // Parameters are payload from mutateAndGetPayload followed by outputFields.
-      resolve: (dbPerson, id, email, language) => {
+      resolve: (dbPerson, id, firstName, lastName, email, language) => {
         return dbPerson;
       }
     }

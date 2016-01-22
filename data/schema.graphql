@@ -72,6 +72,8 @@ type Query {
 
 input UpdatePersonInput {
   id: ID!
+  firstName: String
+  lastName: String
   email: String
   language: String
   clientMutationId: String!
