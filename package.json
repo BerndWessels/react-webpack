@@ -1,6 +1,6 @@
 {
   "name": "react-webpack",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "React Relay SQL Webpack SPA Babel6 Example.",
   "main": "index.js",
   "scripts": {
