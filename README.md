@@ -4,9 +4,26 @@
 
 This is a template you can fork and clone to develop data driven React/Relay SPA Websites using a single GraphQL endpoint.
 
-It also shows how to integrate access to databases like mysql or postgres.
+It also shows how to integrate access to databases like mysql or postgres. This should help you understand how to interface between relay and a real database.
+The official relay documentation is very poor on this point.
 
-And we will keep on adding other important SPA related components and processes for internationalization, whitelabeling and everything else you need to kick-start your unicorn.
+We are using React-Intl V2 as our translation framework. It seems to be the best and most thought after project out there at the moment.
+Even though it is still a pre-release it seems stable enough to be used already.
+
+We added and example for a windowed pagination connection because it seems to be a much more common pagination strategy in enterprise applications
+than the infinite scrolling found in social graph applications. The official relay documentation is also very poor on this.
+
+We decided to provide application wide functionality like changing the language via an application context rather than another flux store.
+Mainly because another flux store is often not necessary and would make this project harder to understand. Application context is also
+the right place to put some of the application wide functionality. Just be careful not to misuse it. In general try to use components and properties rather than the context.
+
+We added an example for storing and restoring "local" state of a route/page to and from session storage.
+This is a very common case since navigating between routes will completely destroy all other pages. So when coming back to a previously visited route/page
+the user often expects that things like the scrolling position in a list, selections or other non-persistent state will be restored.
+
+If we find a good reason for it we could add local storage in the same way we added session storage.
+
+And we will keep on adding other important SPA related components and processes for whitelabeling and everything else you need to kick-start your unicorn.
 
 # Babel 6
 
@@ -20,6 +37,8 @@ Make sure you get the latest versions. Otherwise you might run into bugs that ha
 
 Remember that `babel-relay-plugin` will most likely be renamed soon to `babel-plugin-relay` - which means that the `babel-relay-plugin-loader` also needs to be updated.
 
+Add a changelog to make it easier for followers to find relevant changes.
+
 # Features
 * React
 * Relay
@@ -29,6 +48,8 @@ Remember that `babel-relay-plugin` will most likely be renamed soon to `babel-pl
 * React Bootstrap
 * React-Intl V2 Internationalization
 * Windowed Pagination Connection
+* Session Storage
+* Application Context
 * Heavily commented webpack configuration with reasonable defaults.
 * Latest JSX, ES6, and ES7 support with babel 6.
 * Source maps included in all builds.
