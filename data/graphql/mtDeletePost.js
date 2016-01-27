@@ -51,22 +51,25 @@ import db from '../database/db';
  */
 export default mutationWithClientMutationId({
   // Mutation name.
-  name: 'UpdatePerson',
+  name: 'DeletePost',
   // Fields supplied by the client.
   inputFields: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
-    firstName: {type: GraphQLString},
-    lastName: {type: GraphQLString},
-    email: {type: GraphQLString},
-    language: {type: GraphQLString}
+    id: {type: new GraphQLNonNull(GraphQLID)}
   },
   // Mutated fields returned from the server.
   outputFields: {
-    person: {
+    viewer: {
       type: qlPerson,
       // Parameters are payload from mutateAndGetPayload.
-      resolve: (dbPerson) => {
-        return dbPerson;
+      resolve: ({viewer}) => {
+        return viewer;
+      }
+    },
+    deletedId: {
+      type: GraphQLID,
+      // Parameters are payload from mutateAndGetPayload.
+      resolve: ({id}) => {
+        return id;
       }
     }
   },
@@ -75,15 +78,12 @@ export default mutationWithClientMutationId({
     // TODO: Process Authentication {"session":{"userId":1}}
     console.log(JSON.stringify(rootValue));
     // Convert the client id back to a database id.
-    var localPersonId = fromGlobalId(inputFields.id).id;
-    // Find the person with the given id in the database.
-    return db.person.findOne({where: {id: localPersonId}}).then((dbPerson)=> {
-      // Mutate the person.
-      Object.assign(dbPerson, inputFields, {id: localPersonId});
-      // Save it back to the database.
-      return dbPerson.save().then(()=> {
-        // Return the mutated person as an output field.
-        return dbPerson;
+    var localPostId = fromGlobalId(inputFields.id).id;
+    // Find the post with the given id in the database.
+    return db.post.findOne({where: {id: localPostId}}).then((dbPost)=> {
+      // Delete the post.
+      return dbPost.destroy().then(()=> {
+        return {id: localPostId, viewer: {id: dbPost.personId}};
       });
     });
   }

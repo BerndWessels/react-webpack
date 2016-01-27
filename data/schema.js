@@ -51,6 +51,7 @@ import qlPost from './graphql/qlPost';
  * Import GraphQL Mutations.
  */
 import updatePersonMutation from './graphql/mtUpdatePerson';
+import deletePostMutation from './graphql/mtDeletePost';
 
 /**
  * This is the type that will be the root of our query,
@@ -91,7 +92,8 @@ var queryType = new GraphQLObjectType({
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    updatePerson: updatePersonMutation
+    updatePerson: updatePersonMutation,
+    deletePost: deletePostMutation
   }
 });
 

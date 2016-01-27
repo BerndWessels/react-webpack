@@ -13,24 +13,20 @@ import Relay from 'react-relay';
 /**
  * Create the GraphQL Mutation.
  */
-class UpdatePersonMutation extends Relay.Mutation {
+class DeletePostMutation extends Relay.Mutation {
   // This method should return a GraphQL operation that represents
   // the mutation to be performed. This presumes that the server
-  // implements a mutation type named ‘updatePerson‘.
+  // implements a mutation type named ‘deletePost‘.
   getMutation() {
-    return Relay.QL`mutation {updatePerson}`;
+    return Relay.QL`mutation {deletePost}`;
   }
 
   // Use this method to prepare the variables that will be used as
-  // input to the mutation. Our ‘updatePerson’ mutation takes all
-  // person properties as optional input parameters.
+  // input to the mutation. Our ‘deletePost’ mutation takes exactly
+  // one variable as input – the ID of the post to delete.
   getVariables() {
     return {
-      id: this.props.person.id,
-      firstName: this.props.firstName,
-      lastName: this.props.lastName,
-      email: this.props.email,
-      language: this.props.language
+      id: this.props.post.id
     };
   }
 
@@ -42,13 +38,12 @@ class UpdatePersonMutation extends Relay.Mutation {
   // instruct the server to include only those fields in its response.
   getFatQuery() {
     return Relay.QL`
-      fragment on UpdatePersonPayload {
-        person {
-          firstName
-          lastName
-          email
-          language
+      fragment on DeletePostPayload {
+        viewer {
+          id
+          posts
         }
+        deletedId
       }
     `;
   }
@@ -60,47 +55,46 @@ class UpdatePersonMutation extends Relay.Mutation {
   // with the ID of the record that we want updated.
   getConfigs() {
     return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        person: this.props.person.id
-      }
+      type: 'NODE_DELETE',
+      parentName: 'viewer',
+      parentID: this.props.viewer.id,
+      connectionName: 'posts',
+      deletedIDFieldName: 'deletedId'
     }];
   }
 
-  // This mutation has a hard dependency on the person's ID. We specify this
+  // This mutation has a hard dependency on the post's ID. We specify this
   // dependency declaratively here as a GraphQL query fragment. Relay will
-  // use this fragment to ensure that the person's ID is available wherever
+  // use this fragment to ensure that the post's ID is available wherever
   // this mutation is used.
   static fragments = {
-    person: () => Relay.QL`
+    viewer: () => Relay.QL`
       fragment on Person {
         id
-        firstName
-        lastName
-        email
-        language
-      }
-    `
+      }`,
+    post: () => Relay.QL`
+      fragment on Post {
+        id
+      }`
   };
 
   // Implement this method to craft an optimistic response
   // having the same shape as the server response payload.
   // This optimistic response will be used to preemptively update the client cache
   // before the server returns, giving the impression that the mutation completed instantaneously.
+  /*
   getOptimisticResponse() {
+    const { viewer, post } = this.props;
+    const viewerPayload = { id: viewer.id };
     return {
-      person: {
-        id: this.props.person.id,
-        firstName: this.props.firstName,
-        lastName: this.props.lastName,
-        email: this.props.email,
-        language: this.props.language
-      }
+      viewer: viewerPayload,
+      deletedId: post.id
     };
   }
+  */
 }
 
 /**
  * Exports.
  */
-export default UpdatePersonMutation;
+export default DeletePostMutation;

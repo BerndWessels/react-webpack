@@ -13,6 +13,7 @@ import Relay from 'react-relay';
 /**
  * Import Mutations.
  */
+import DeletePostMutation from '../../mutations/deletePostMutation';
 
 /**
  * Import Components.
@@ -113,6 +114,7 @@ class Home extends React.Component {
                   defaultMessage="Welcome {firstName} {lastName}!"
                   values={{firstName: this.props.viewer.firstName, lastName: this.props.viewer.lastName}}
                 />
+                <span>{this.props.viewer.posts.totalCount}</span>
               </PageHeader>
             </Col>
           </Row>
@@ -135,7 +137,7 @@ class Home extends React.Component {
             <Col xs={12}>
               <ListGroup>
                 {this.props.viewer.posts.edges.map(edge =>
-                  <Post key={edge.cursor} post={edge.node}/>
+                  <Post key={edge.cursor} viewer={this.props.viewer} post={edge.node}/>
                 )}
               </ListGroup>
             </Col>
@@ -163,6 +165,7 @@ export default Relay.createContainer(Home, {
         posts(limit: $limit, offset: $offset) {
           ${postsFragment}
         }
+         ${Post.getFragment('viewer')}
       }`
   }
 });

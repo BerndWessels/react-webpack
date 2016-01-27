@@ -15,8 +15,20 @@ type commentEdge {
   cursor: String!
 }
 
+input DeletePostInput {
+  id: ID!
+  clientMutationId: String!
+}
+
+type DeletePostPayload {
+  viewer: Person
+  deletedId: ID
+  clientMutationId: String!
+}
+
 type Mutation {
   updatePerson(input: UpdatePersonInput!): UpdatePersonPayload
+  deletePost(input: DeletePostInput!): DeletePostPayload
 }
 
 interface Node {
